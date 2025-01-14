@@ -1,0 +1,37 @@
+﻿@model AutoAppHoho.Models.MapViewModel
+
+<div class="container-fluid">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Auto's op Kaart</h2>
+        <a class="add-car-btn" href="/Map/Create">Voeg een nieuwe auto toe</a>
+        <p style="margin-top: auto; font-size: 0.9rem;">© 2025 - AutoAppHoho</p>
+    </div>
+
+    <!-- Map Container -->
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+</div>
+
+<!-- Voeg Leaflet.js toe -->
+<script>
+    // Initialiseer de kaart
+    var map = L.map('map').setView([51.2194, 4.4025], 6); // Centraal in België
+
+    // Voeg een kaartlaag toe
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Voeg markers toe (voorbeeld)
+    var carLocations = [
+        { name: "Brussel", location: [50.8503, 4.3517] },
+        { name: "Antwerpen", location: [51.2194, 4.4025] },
+        { name: "Gent", location: [51.0543, 3.7174] }
+    ];
+
+    carLocations.forEach(function (car) {
+        L.marker(car.location).addTo(map).bindPopup(car.name);
+    });
+</script>

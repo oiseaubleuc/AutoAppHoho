@@ -1,0 +1,19 @@
+﻿@model AutoAppHoho.Models.Nieuws
+
+<h2>@Model.Titel</h2>
+
+<div>
+    <p>@Model.Tekst</p>
+    <p>Publicatiedatum: @Model.Publicatiedatum.ToString("d MMM yyyy")</p>
+    
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        <img src="@Model.ImagePath" alt="@Model.Titel" class="img-fluid" />
+    }
+    
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Bewerken</a> |
+    <a asp-action="Index">Terug naar overzicht</a>
+</div>

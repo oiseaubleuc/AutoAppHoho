@@ -1,0 +1,38 @@
+﻿@model AutoAppHoho.Models.Nieuws
+
+<h2>Edit News</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Titel"></label>
+        <input asp-for="Titel" class="form-control" />
+        <span asp-validation-for="Titel" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Tekst"></label>
+        <textarea asp-for="Tekst" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Tekst" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="image">Update Image (optional)</label>
+        <input type="file" name="image" class="form-control" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ImagePath))
+    {
+        
+        <div class="form-group mt-3">
+            <p>Current Image:</p>
+            <img src="@Model.ImagePath" alt="@Model.Titel" width="100" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

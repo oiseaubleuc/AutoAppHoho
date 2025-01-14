@@ -1,0 +1,40 @@
+﻿@model AutoAppHoho.Models.Nieuws
+
+@{
+    ViewData["Title"] = "Nieuws Aanmaken";
+}
+
+<h2>Nieuws Aanmaken</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <!-- Titel -->
+    <div class="form-group">
+        <label asp-for="Titel" class="control-label"></label>
+        <input asp-for="Titel" class="form-control" />
+        <span asp-validation-for="Titel" class="text-danger"></span>
+    </div>
+
+    <!-- Tekst -->
+    <div class="form-group">
+        <label asp-for="Tekst" class="control-label"></label>
+        <textarea asp-for="Tekst" class="form-control" rows="5"></textarea>
+        <span asp-validation-for="Tekst" class="text-danger"></span>
+    </div>
+
+    <!-- Afbeelding uploaden -->
+    <div class="form-group">
+        <label for="image" class="control-label">Afbeelding</label>
+        <input type="file" name="image" class="form-control" accept="image/*" />
+        <span class="text-danger">@ViewBag.ImageError</span> <!-- Feedback voor fouten bij uploaden -->
+    </div>
+
+
+    <!-- Opslaan en Annuleren knoppen -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Opslaan</button>
+        <a asp-action="Index" class="btn btn-secondary">Annuleren</a>
+    </div>
+</form>
+

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<AutoAppHoho.Models.Nieuws>
+
+<h2>Nieuws</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nieuw Nieuwsbericht</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titel</th>
+            <th>Tekst</th>
+            <th>Publicatiedatum</th>
+            <th>Afbeelding</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Titel</td>
+                <td>@item.Tekst</td>
+                <td>@item.Publicatiedatum.ToString("d MMM yyyy")</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                       <img src="@item.ImagePath" alt="@item.Titel" width="100" />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Bewerken</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

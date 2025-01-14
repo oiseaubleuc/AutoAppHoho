@@ -1,0 +1,95 @@
+﻿@model AutoAppHoho.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h1>Beheerder Dashboard</h1>
+    <div class="row">
+        <!-- Statistieken -->
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Totaal Auto's</h5>
+                    <p class="card-text">@Model.TotalCars</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Totaal Boekingen</h5>
+                    <p class="card-text">@Model.TotalAppointments</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Totaal Beheerders</h5>
+                    <p class="card-text">@Model.TotalAdmins</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Totaal Facturen</h5>
+                    <p class="card-text">@Model.TotalInvoices</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recente auto's -->
+    <div class="mt-4">
+        <h2>Recente Auto's</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Merk</th>
+                    <th>Prijs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var car in Model.RecentCars)
+                {
+                    <tr>
+                        <td>@car.Name</td>
+                        <td>@car.Price.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Recente boekingen -->
+    <div class="mt-4">
+        <h2>Recente Boekingen</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Datum</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model.RecentAppointments)
+                {
+                    <tr>
+                        <td>@appointment.CarName</td>
+                        <td>@appointment.AppointmentDate.ToShortDateString()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Link naar Car Offers beheer -->
+    <div class="mt-4">
+        <h2>Auto Aanbiedingen Beheren</h2>
+        <a href="/CarOffers/Manage" class="btn btn-primary">Beheer Auto Aanbiedingen</a>
+    </div>
+</div>
