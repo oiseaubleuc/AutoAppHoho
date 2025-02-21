@@ -1,40 +1,25 @@
 ﻿@model IEnumerable<AutoAppHoho.Models.Nieuws>
 
-<h2>Nieuws</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">Laatste Nieuws</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Nieuw Nieuwsbericht</a>
-</p>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Nieuw Nieuwsbericht</a>
+    </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Titel</th>
-            <th>Tekst</th>
-            <th>Publicatiedatum</th>
-            <th>Afbeelding</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    <div class="row">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Titel</td>
-                <td>@item.Tekst</td>
-                <td>@item.Publicatiedatum.ToString("d MMM yyyy")</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImagePath))
-                    {
-                       <img src="@item.ImagePath" alt="@item.Titel" width="100" />
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Bewerken</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Verwijderen</a>
-                </td>
-            </tr>
+            <div class="col-md-4 mb-4">
+                <div class="card news-card shadow-lg border-0">
+                    <img src="@item.ImagePath" class="card-img-top news-image" alt="@item.Titel">
+                    <div class="card-img-overlay d-flex flex-column justify-content-end">
+                        <h5 class="card-title text-white fw-bold">@item.Titel</h5>
+                        <p class="card-text text-white-50 small">@item.Publicatiedatum.ToString("d MMM yyyy")</p>
+                        <a href="@Url.Action("Details", "Nieuws", new { id = item.Id })" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>

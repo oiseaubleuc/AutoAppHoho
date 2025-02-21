@@ -1,95 +1,95 @@
-﻿@model AutoAppHoho.Models.DashboardViewModel
+﻿<div class="container mt-4">
+    <h2 class="mb-4">Beheerder Dashboard</h2>
 
-@{
-    ViewData["Title"] = "Dashboard";
-}
-
-<div class="container mt-4">
-    <h1>Beheerder Dashboard</h1>
+    <!-- Statistieken -->
     <div class="row">
-        <!-- Statistieken -->
         <div class="col-md-3">
-            <div class="card text-center">
+            <div class="card text-white bg-dark shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Totaal Auto's</h5>
-                    <p class="card-text">@Model.TotalCars</p>
+                    <h5 class="card-title"><i class="fas fa-car"></i> Totaal Auto's</h5>
+                    <p class="card-text fs-3">3</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center">
+            <div class="card text-white bg-dark shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Totaal Boekingen</h5>
-                    <p class="card-text">@Model.TotalAppointments</p>
+                    <h5 class="card-title"><i class="fas fa-calendar-check"></i> Totaal Boekingen</h5>
+                    <p class="card-text fs-3">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center">
+            <div class="card text-white bg-dark shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Totaal Beheerders</h5>
-                    <p class="card-text">@Model.TotalAdmins</p>
+                    <h5 class="card-title"><i class="fas fa-user-shield"></i> Totaal Beheerders</h5>
+                    <p class="card-text fs-3">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center">
+            <div class="card text-white bg-dark shadow">
                 <div class="card-body">
-                    <h5 class="card-title">Totaal Facturen</h5>
-                    <p class="card-text">@Model.TotalInvoices</p>
+                    <h5 class="card-title"><i class="fas fa-file-invoice"></i> Totaal Facturen</h5>
+                    <p class="card-text fs-3">1</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Recente auto's -->
-    <div class="mt-4">
-        <h2>Recente Auto's</h2>
-        <table class="table table-striped">
+    <!-- Recente Auto's -->
+    <div class="mt-5">
+        <h3>Recente Auto's</h3>
+        <table class="table table-dark table-hover">
             <thead>
                 <tr>
                     <th>Naam</th>
                     <th>Merk</th>
                     <th>Prijs</th>
+                    <th>Acties</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var car in Model.RecentCars)
-                {
-                    <tr>
-                        <td>@car.Name</td>
-                        <td>@car.Price.ToString("C")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Recente boekingen -->
-    <div class="mt-4">
-        <h2>Recente Boekingen</h2>
-        <table class="table table-striped">
-            <thead>
                 <tr>
-                    <th>Naam</th>
-                    <th>Datum</th>
+                    <td>Mercedes-Benz</td>
+                    <td>€ 100.000,00</td>
+                    <td><a href="#" class="btn btn-sm btn-warning">Bekijk</a></td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var appointment in Model.RecentAppointments)
-                {
-                    <tr>
-                        <td>@appointment.CarName</td>
-                        <td>@appointment.AppointmentDate.ToShortDateString()</td>
-                    </tr>
-                }
+                <tr>
+                    <td>Audi</td>
+                    <td>€ 40.000,00</td>
+                    <td><a href="#" class="btn btn-sm btn-warning">Bekijk</a></td>
+                </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Link naar Car Offers beheer -->
-    <div class="mt-4">
-        <h2>Auto Aanbiedingen Beheren</h2>
-        <a href="/CarOffers/Manage" class="btn btn-primary">Beheer Auto Aanbiedingen</a>
+    <!-- Auto Aanbiedingen beheren -->
+    <div class="mt-5">
+        <h3>Auto Aanbiedingen Beheren</h3>
+        <a href="#" class="btn btn-lg btn-warning">Beheer Auto Aanbiedingen</a>
+    </div>
+
+    <!-- Grafiek voor auto-statistieken -->
+    <div class="mt-5">
+        <h3>Statistieken</h3>
+        <canvas id="carChart"></canvas>
     </div>
 </div>
+
+<!-- Chart.js script voor statistieken -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('carChart').getContext('2d');
+    var carChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Mercedes-Benz', 'Audi', 'Tesla'],
+            datasets: [{
+                label: 'Auto’s per Merk',
+                data: [5, 3, 7], // Dit kan uit de database komen
+                backgroundColor: ['#ffcc00', '#ff6600', '#ff0000']
+            }]
+        }
+    });
+</script>

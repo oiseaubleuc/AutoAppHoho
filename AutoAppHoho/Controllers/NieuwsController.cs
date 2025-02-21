@@ -25,14 +25,20 @@ namespace AutoAppHoho.Controllers
         // GET: Nieuws
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Nieuws.OrderByDescending(n => n.Publicatiedatum).ToListAsync());
-            
             var news = await _context.Nieuws
                 .OrderByDescending(n => n.Publicatiedatum)
-                .ToListAsync();
-            return View(news);
+                .Select(n => new Nieuws
+                {
+                    Id = n.Id,
+                    Titel = n.Titel,
+                    Tekst = n.Tekst,
+                    Publicatiedatum = n.Publicatiedatum,
+                    ImagePath = string.IsNullOrEmpty(n.ImagePath) ? "/images/default-news.jpg" : n.ImagePath
+                }).ToListAsync();
 
+            return View(news);
         }
+
 
         // GET: Nieuws/Details/5
         public async Task<IActionResult> Details(int? id)

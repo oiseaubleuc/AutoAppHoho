@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
+using Microsoft.AspNetCore.Hosting;
 
 namespace AutoAppHoho.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CarsController(ApplicationDbContext context)
+        public CarsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Cars
@@ -50,8 +53,8 @@ namespace AutoAppHoho.Controllers
 
             return View(car);
         }
-
         // GET: Cars/Create
+        [HttpGet]  // Dit attribuut specificeert dat dit een GET-methode is
         public IActionResult Create()
         {
             PopulateDropdowns();
@@ -59,12 +62,35 @@ namespace AutoAppHoho.Controllers
         }
 
         // POST: Cars/Create
-        [HttpPost]
+        [HttpPost] // Dit attribuut specificeert dat dit een POST-methode is
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,FuelTypeId,CategoryId,IsDeleted")] Car car)
+        public async Task<IActionResult> Create([Bind("Id,Name,Price,FuelTypeId,CategoryId,IsDeleted")] Car car, IFormFile image)
         {
             if (ModelState.IsValid)
             {
+                if (image != null && image.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/cars");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(image.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(fileStream);
+                    }
+
+                    car.ImagePath = "/uploads/cars/" + uniqueFileName;
+                }
+                else
+                {
+                    car.ImagePath = "/images/default-car.jpg";
+                }
+
                 _context.Add(car);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -73,6 +99,9 @@ namespace AutoAppHoho.Controllers
             PopulateDropdowns(car);
             return View(car);
         }
+
+
+
 
         // GET: Cars/Edit/5
         public async Task<IActionResult> Edit(int? id)

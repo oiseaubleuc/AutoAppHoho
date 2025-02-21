@@ -133,3 +133,32 @@ a {
         font-size: 0.9rem;
     }
 }
+
+.news-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+    .news-card:hover {
+        transform: scale(1.05);
+    }
+
+.news-image {
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.card-img-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    transition: background 0.3s ease-in-out;
+}
+
+.news-card:hover .card-img-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}

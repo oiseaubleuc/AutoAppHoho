@@ -15,6 +15,7 @@ namespace AutoAppHoho.Models
 
         public bool IsDeleted { get; set; }
         public int Views { get; set; }
+        public string ImagePath { get; set; }
 
         // Navigation properties
         public FuelType? FuelType { get; set; }

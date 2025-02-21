@@ -5,10 +5,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AutoAppHoho.Migrations
 {
-    public partial class AddNieuwsTable : Migration
+    /// <inheritdoc />
+    public partial class AddImagePathToCar : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "ImagePath",
+                table: "Cars",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
             migrationBuilder.CreateTable(
                 name: "Nieuws",
                 columns: table => new
@@ -18,7 +27,7 @@ namespace AutoAppHoho.Migrations
                     Titel = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Tekst = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Publicatiedatum = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -31,6 +40,10 @@ namespace AutoAppHoho.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Nieuws");
+
+            migrationBuilder.DropColumn(
+                name: "ImagePath",
+                table: "Cars");
         }
     }
 }

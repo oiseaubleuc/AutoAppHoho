@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoAppHoho.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250110172054_AddNieuwsTable")]
-    partial class AddNieuwsTable
+    [Migration("20250221150909_AddImagePathToCar")]
+    partial class AddImagePathToCar
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,6 +97,10 @@ namespace AutoAppHoho.Migrations
 
                     b.Property<int>("FuelTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -253,7 +257,6 @@ namespace AutoAppHoho.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Publicatiedatum")

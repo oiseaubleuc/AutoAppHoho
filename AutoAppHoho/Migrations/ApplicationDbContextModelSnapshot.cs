@@ -95,6 +95,10 @@ namespace AutoAppHoho.Migrations
                     b.Property<int>("FuelTypeId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -250,7 +254,6 @@ namespace AutoAppHoho.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Publicatiedatum")
