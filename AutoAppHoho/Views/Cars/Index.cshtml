@@ -1,57 +1,36 @@
 ﻿@model IEnumerable<AutoAppHoho.Models.Car>
 
-@{
-    ViewData["Title"] = "Auto Lijst";
-}
-
-<div class="container mt-4">
-    <h2 class="mb-3">Auto's Beheren</h2>
-
-    <form asp-action="Index" method="get" class="mb-3 d-flex">
-        <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control me-2" placeholder="Zoek op naam of brandstof..." />
-        <button type="submit" class="btn btn-primary">Zoeken</button>
-    </form>
+<div class="container mt-5">
+    <h2>Geposte Advertenties</h2>
 
     <a asp-action="Create" class="btn btn-success mb-3">+ Nieuwe Auto Toevoegen</a>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSort"]">Naam</a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSort"]">Prijs</a>
-                </th>
-                <th>Brandstoftype</th>
-                <th>Categorie</th>
-                <th>Acties</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (!Model.Any())
-            {
-                <tr>
-                    <td colspan="5" class="text-center text-muted">Geen auto's gevonden.</td>
-                </tr>
-            }
-            else
-            {
-                @foreach (var car in Model)
-                {
-                    <tr>
-                        <td>@car.Name</td>
-                        <td>€ @car.Price.ToString("N2")</td>
-                        <td>@car.FuelType.Name</td>
-                        <td>@car.Category.Name</td>
-                        <td>
-                            <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-info btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@car.Id" class="btn btn-warning btn-sm">Bewerken</a>
-                            <a asp-action="Delete" asp-route-id="@car.Id" class="btn btn-danger btn-sm">Verwijderen</a>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
+
+    <div class="row">
+        @foreach (var car in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="@car.ImagePath" class="card-img-top" alt="@car.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@car.Name</h5>
+                        <p class="card-text">@car.FuelType?.Name - @car.Category?.Name</p>
+                        <h4 class="text-success">@car.Price.ToString("C")</h4>
+                        <p><small>@car.Views weergaven</small></p>
+                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link">Vorige</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link">Volgende</a></li>
+        </ul>
+    </nav>
 </div>

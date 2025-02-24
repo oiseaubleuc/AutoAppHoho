@@ -1,70 +1,30 @@
 ﻿@model IEnumerable<AutoAppHoho.Models.Car>
 
-<h1>Geposte Advertenties</h1>
-
-<form asp-action="Index" method="get">
-    <div class="form-row">
-        <!-- Zoek op naam -->
-        <div class="form-group col-md-4">
-            <input type="text" name="searchString" class="form-control" placeholder="Zoek op naam" value="@Context.Request.Query["searchString"]" />
-        </div>
-
-        <!-- Filter op FuelType -->
-        <div class="form-group col-md-3">
-            <select name="fuelTypeId" class="form-control">
-                <option value="">-- Filter op Brandstoftype --</option>
-                @foreach (var fuelType in ViewBag.FuelTypes as IEnumerable<SelectListItem>)
-                {
-                    var isSelected = fuelType.Value == Context.Request.Query["fuelTypeId"].ToString() ? "selected" : string.Empty;
-                    <option value="@fuelType.Value" selected="@isSelected">@fuelType.Text</option>
-                }
-            </select>
-        </div>
-
-        <!-- Filter op Category -->
-        <div class="form-group col-md-3">
-            <select name="categoryId" class="form-control">
-                <option value="">-- Filter op Categorie --</option>
-                @foreach (var category in ViewBag.Categories as IEnumerable<SelectListItem>)
-                {
-                    var isSelected = category.Value == Context.Request.Query["categoryId"].ToString() ? "selected" : string.Empty;
-                    <option value="@category.Value" selected="@isSelected">@category.Text</option>
-                }
-            </select>
-        </div>
-
-        <!-- Filter Knop -->
-        <div class="form-group col-md-2">
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
+<div class="container mt-5">
+    <h1 class="text-center">Welkom op de beste auto marktplaats!</h1>
+    <div class="text-center">
+        <img src="https://source.unsplash.com/1200x400/?cars" class="img-fluid rounded shadow" alt="Auto Markt">
     </div>
-</form>
 
-<!-- Tabel met advertenties -->
-<table class="table mt-4">
-    <thead>
-        <tr>
-            <th>Naam</th>
-            <th>Prijs</th>
-            <th>Brandstoftype</th>
-            <th>Categorie</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var car in Model)
+    <div class="text-center mt-4">
+        <a asp-controller="Cars" asp-action="Index" class="btn btn-lg btn-primary">Bekijk alle advertenties</a>
+        <button class="btn btn-secondary">Bekijk site statistieken</button>
+    </div>
+
+    <h2 class="mt-5">Laatste posts:</h2>
+    <div class="row">
+        @foreach (var car in Model.Take(5))
         {
-            <tr>
-                <td>@car.Name</td>
-                <td>@car.Price.ToString("C")</td>
-                <td>@car.FuelType?.Name</td>
-                <td>@car.Category?.Name</td>
-            </tr>
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="@car.ImagePath" class="card-img-top" alt="@car.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">@car.Name</h5>
+                        <p class="card-text">@car.Price.ToString("C")</p>
+                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
-
-<!-- Als er geen resultaten zijn -->
-@if (!Model.Any())
-{
-    <p>Er zijn geen advertenties gevonden met de geselecteerde filters.</p>
-}
+    </div>
+</div>

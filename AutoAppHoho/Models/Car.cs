@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using AutoAppHoho.Models;
 
 
@@ -16,10 +17,11 @@ namespace AutoAppHoho.Models
         public bool IsDeleted { get; set; }
         public int Views { get; set; }
         public string ImagePath { get; set; }
-
         // Navigation properties
         public FuelType? FuelType { get; set; }
         public Category? Category { get; set; }
+
+ 
 
 
 
