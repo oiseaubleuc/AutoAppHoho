@@ -1,57 +1,57 @@
 ﻿@model IEnumerable<AutoAppHoho.Models.Car>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Auto Toevoegen</a>
-</p>
 
-<div class="container my-5">
-    <h1 class="mb-4 text-center">Onze Auto's</h1>
+@{
+    ViewData["Title"] = "Auto Lijst";
+}
 
-    <!-- Zoek- en filtersectie -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <input type="text" class="form-control" placeholder="Zoek op naam, merk of model..." />
-        </div>
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>Alle categorieën</option>
-                @if (ViewBag.Categories != null)
-                {
-                    foreach (var category in ViewBag.Categories as IEnumerable<AutoAppHoho.Models.Category>)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                }
-            </select>
-        </div>
-        <div class="col-md-3">
-            <button class="btn btn-primary w-100">Filteren</button>
-        </div>
-    </div>
+<div class="container mt-4">
+    <h2 class="mb-3">Auto's Beheren</h2>
 
-    <!-- Auto's lijst -->
-    <div class="row">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var car in Model)
+    <form asp-action="Index" method="get" class="mb-3 d-flex">
+        <input type="text" name="search" value="@Context.Request.Query["search"]" class="form-control me-2" placeholder="Zoek op naam of brandstof..." />
+        <button type="submit" class="btn btn-primary">Zoeken</button>
+    </form>
+
+    <a asp-action="Create" class="btn btn-success mb-3">+ Nieuwe Auto Toevoegen</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSort"]">Naam</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSort"]">Prijs</a>
+                </th>
+                <th>Brandstoftype</th>
+                <th>Categorie</th>
+                <th>Acties</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
             {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">@car.Name</h5>
-                            <p>
-                                <span class="badge bg-info">@car.Category?.Name</span>
-                                <span class="badge bg-success">@car.FuelType?.Name</span>
-                            </p>
-                            <p class="text-primary fw-bold">€ @car.Price.ToString("N2")</p>
-                            <a href="@Url.Action("Details", "Cars", new { id = car.Id })" class="btn btn-outline-primary w-100">Bekijk details</a>
-                        </div>
-                    </div>
-                </div>
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Geen auto's gevonden.</td>
+                </tr>
             }
-        }
-        else
-        {
-            <p>Geen auto's beschikbaar.</p>
-        }
-    </div>
+            else
+            {
+                @foreach (var car in Model)
+                {
+                    <tr>
+                        <td>@car.Name</td>
+                        <td>€ @car.Price.ToString("N2")</td>
+                        <td>@car.FuelType.Name</td>
+                        <td>@car.Category.Name</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Edit" asp-route-id="@car.Id" class="btn btn-warning btn-sm">Bewerken</a>
+                            <a asp-action="Delete" asp-route-id="@car.Id" class="btn btn-danger btn-sm">Verwijderen</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 </div>

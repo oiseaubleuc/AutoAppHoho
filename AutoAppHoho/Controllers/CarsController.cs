@@ -1,194 +1,180 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
-using Microsoft.AspNetCore.Hosting;
+
 
 namespace AutoAppHoho.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ILogger<CarsController> _logger;
 
-        public CarsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public CarsController(ApplicationDbContext context, ILogger<CarsController> logger)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
-        // GET: Cars
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, string sortOrder)
         {
-            var cars = await _context.Cars
+            var cars = _context.Cars
                 .Include(c => c.FuelType)
                 .Include(c => c.Category)
+                .Where(c => !c.IsDeleted);
 
-                .Where(c => !c.IsDeleted)
-                .ToListAsync();
+            if (!string.IsNullOrEmpty(search))
+            {
+                cars = cars.Where(c => c.Name.Contains(search) || c.FuelType.Name.Contains(search));
+            }
 
-            return View(cars);
+            ViewData["NameSort"] = sortOrder == "name" ? "name_desc" : "name";
+            ViewData["PriceSort"] = sortOrder == "price" ? "price_desc" : "price";
+
+            switch (sortOrder)
+            {
+                case "name":
+                    cars = cars.OrderBy(c => c.Name);
+                    break;
+                case "name_desc":
+                    cars = cars.OrderByDescending(c => c.Name);
+                    break;
+                case "price":
+                    cars = cars.OrderBy(c => c.Price);
+                    break;
+                case "price_desc":
+                    cars = cars.OrderByDescending(c => c.Price);
+                    break;
+            }
+
+            return View(await cars.ToListAsync());
         }
 
-        // GET: Cars/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var car = await _context.Cars
                 .Include(c => c.FuelType)
                 .Include(c => c.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (car == null)
-            {
-                return NotFound();
-            }
+            if (car == null) return NotFound();
 
             return View(car);
         }
-        // GET: Cars/Create
-        [HttpGet]  // Dit attribuut specificeert dat dit een GET-methode is
+
         public IActionResult Create()
         {
             PopulateDropdowns();
             return View();
         }
 
-        // POST: Cars/Create
-        [HttpPost] // Dit attribuut specificeert dat dit een POST-methode is
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,FuelTypeId,CategoryId,IsDeleted")] Car car, IFormFile image)
-        {
-            if (ModelState.IsValid)
-            {
-                if (image != null && image.Length > 0)
-                {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads/cars");
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(image.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await image.CopyToAsync(fileStream);
-                    }
-
-                    car.ImagePath = "/uploads/cars/" + uniqueFileName;
-                }
-                else
-                {
-                    car.ImagePath = "/images/default-car.jpg";
-                }
-
-                _context.Add(car);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            PopulateDropdowns(car);
-            return View(car);
-        }
-
-
-
-
-        // GET: Cars/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
-            {
-                return NotFound();
-            }
-
-            PopulateDropdowns(car);
-            return View(car);
-        }
-
-        // POST: Cars/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,FuelTypeId,CategoryId,IsDeleted")] Car car)
+        public async Task<IActionResult> Create([Bind("Name,Price,FuelTypeId,CategoryId")] Car car)
         {
-            if (id != car.Id)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                PopulateDropdowns(car);
+                return View(car);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(car);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CarExists(car.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Add(car);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Auto succesvol toegevoegd!";
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Fout bij opslaan van auto: {ex.Message}");
+                ModelState.AddModelError("", "Fout bij opslaan, probeer opnieuw.");
             }
 
             PopulateDropdowns(car);
             return View(car);
         }
 
-        // GET: Cars/Delete/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var car = await _context.Cars.FindAsync(id);
+            if (car == null) return NotFound();
+
+            PopulateDropdowns(car);
+            return View(car);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,FuelTypeId,CategoryId")] Car car)
+        {
+            if (id != car.Id) return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                PopulateDropdowns(car);
+                return View(car);
+            }
+
+            try
+            {
+                _context.Update(car);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Auto succesvol bijgewerkt!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Fout bij bewerken van auto: {ex.Message}");
+                ModelState.AddModelError("", "Fout bij bewerken, probeer opnieuw.");
+            }
+
+            PopulateDropdowns(car);
+            return View(car);
+        }
+
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var car = await _context.Cars
                 .Include(c => c.FuelType)
                 .Include(c => c.Category)
-
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (car == null)
-            {
-                return NotFound();
-            }
+            if (car == null) return NotFound();
 
             return View(car);
         }
 
-        // POST: Cars/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var car = await _context.Cars.FindAsync(id);
-            if (car != null)
+            if (car == null) return NotFound();
+
+            try
             {
                 car.IsDeleted = true;
                 _context.Update(car);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Auto succesvol verwijderd!";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Fout bij verwijderen van auto: {ex.Message}");
+                TempData["ErrorMessage"] = "Fout bij verwijderen, probeer opnieuw.";
             }
 
             return RedirectToAction(nameof(Index));
@@ -204,6 +190,5 @@ namespace AutoAppHoho.Controllers
             ViewBag.FuelTypes = new SelectList(_context.FuelTypes.OrderBy(f => f.Name), "Id", "Name", car?.FuelTypeId);
             ViewBag.Categories = new SelectList(_context.Categories.OrderBy(c => c.Name), "Id", "Name", car?.CategoryId);
         }
-
     }
 }
