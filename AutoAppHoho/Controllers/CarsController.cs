@@ -1,20 +1,27 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
+using AutoAppHoho.Migrations;
 
 namespace AutoAppHoho.Controllers
 {
     public class CarsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public CarsController(ApplicationDbContext context)
+        public CarsController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment; // Nodig voor bestandsuploads
         }
 
         // 🔹 INDEX - Toon alle auto's behalve verwijderde auto's
@@ -60,15 +67,37 @@ namespace AutoAppHoho.Controllers
             return View();
         }
 
-        // 🔹 CREATE - Auto opslaan in database
+        // 🔹 CREATE - Auto opslaan in database met afbeelding
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Price,FuelTypeId,CategoryId,Description,Location,ImagePath")] Car car)
+        public async Task<IActionResult> Create([Bind("Name,Price,FuelTypeId,CategoryId,Location")] Car car, IFormFile imageFile)
         {
             if (ModelState.IsValid)
             {
-                car.IsDeleted = false; // Zorg ervoor dat de auto actief is bij het aanmaken
-                car.Views = 0; // Start met 0 views
+                car.IsDeleted = false; 
+                car.Views = 0; 
+                if (car.ImagePath != null)
+                {
+                    // ✅ 1. Uploadmap bepalen
+                    string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "wwwroot/uploads/cars");
+                    Directory.CreateDirectory(uploadsFolder); // Zorg ervoor dat de map bestaat
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + car.ImagePath;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+
+                    // ✅ 3. Opslaan van het pad in de database
+                    car.ImagePath = "/uploads/cars/" + uniqueFileName;
+                }
+                else
+                {
+                    car.ImagePath = "/uploads/cars/audi.jpg";
+                }
 
                 _context.Add(car);
                 await _context.SaveChangesAsync();
