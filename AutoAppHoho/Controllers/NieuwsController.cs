@@ -71,7 +71,7 @@ namespace AutoAppHoho.Controllers
 
                 if (image != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "wwwroot/uploads/news");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -85,7 +85,7 @@ namespace AutoAppHoho.Controllers
                         await image.CopyToAsync(fileStream);
                     }
 
-                    news.ImagePath = "/uploads/" + uniqueFileName;
+                    news.ImagePath = "/uploads/news" + uniqueFileName;
                 }
                 
                 news.Publicatiedatum = DateTime.Now;

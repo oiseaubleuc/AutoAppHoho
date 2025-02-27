@@ -1,34 +1,72 @@
 ﻿@model AutoAppHoho.Models.Car
 
-<div class="container mt-5">
-    <h2>@Model.Name</h2>
-    <p class="text-muted">Gepubliceerd op: @DateTime.Now.ToString("dd/MM/yyyy")</p>
+@{
+    ViewData["Title"] = "Details";
+}
 
-    <div class="row">
-        <!-- Grote afbeelding -->
-        <div class="col-md-6">
-            <img src="@Model.ImagePath" class="img-fluid rounded shadow-lg" alt="Auto afbeelding">
-        </div>
+<h1>Details</h1>
 
-        <!-- Auto details -->
-        <div class="col-md-6">
-            <h4 class="text-secondary">@Model.Price.ToString("C")</h4>
-            <p><strong>Brandstoftype:</strong> @Model.FuelType?.Name</p>
-            <p><strong>Categorie:</strong> @Model.Category?.Name</p>
-            <p><strong>Locatie:</strong> @Model.Location</p>
-            <p><strong>Weergaven:</strong> @Model.Views</p>
-        </div>
-    </div>
-
-    <hr>
-
-    <!-- Extra details -->
-    <h4 class="mt-4">Auto Extra's</h4>
-    <ul>
-        <li>ABS, ESP, Airbags</li>
-        <li>Bluetooth, Cruise Control, Navigatie</li>
-        <li>Lederen stoelen, Verwarmde stoelen</li>
-    </ul>
-
-    <a asp-action="Index" class="btn btn-secondary">Terug naar lijst</a>
+<div>
+    <h4>Car</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Views)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Views)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FuelType)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FuelType.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ImagePath)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ImagePath)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>

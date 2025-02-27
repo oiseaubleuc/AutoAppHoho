@@ -1,36 +1,83 @@
 ﻿@model IEnumerable<AutoAppHoho.Models.Car>
 
-<div class="container mt-5">
-    <h2>Geposte Advertenties</h2>
+@{
+    ViewData["Title"] = "Index";
+}
 
-    <a asp-action="Create" class="btn btn-success mb-3">+ Nieuwe Auto Toevoegen</a>
+<h1>Index</h1>
 
-
-    <div class="row">
-        @foreach (var car in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <img src="@car.ImagePath" class="card-img-top" alt="@car.Name">
-                    <div class="card-body">
-                        <h5 class="card-title">@car.Name</h5>
-                        <p class="card-text">@car.FuelType?.Name - @car.Category?.Name</p>
-                        <h4 class="text-success">@car.Price.ToString("C")</h4>
-                        <p><small>@car.Views weergaven</small></p>
-                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-
-    <nav aria-label="Pagination">
-        <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link">Vorige</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link">Volgende</a></li>
-        </ul>
-    </nav>
-</div>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Views)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FuelType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Views)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FuelType.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImagePath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
