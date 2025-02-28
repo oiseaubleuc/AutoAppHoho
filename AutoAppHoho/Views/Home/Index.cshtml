@@ -7,7 +7,7 @@
     </div>
 
     <div class="text-center mt-4">
-        <a asp-controller="Cars" asp-action="Index" class="btn btn-lg btn-primary">Bekijk alle advertenties</a>
+        <a asp-controller="Car" asp-action="Index" class="btn btn-lg btn-primary">Bekijk alle advertenties</a>
         <button class="btn btn-secondary">Bekijk site statistieken</button>
     </div>
 
@@ -17,11 +17,10 @@
         {
             <div class="col-md-3 mb-4">
                 <div class="card">
-                    <img src="@car.ImagePath" class="card-img-top" alt="@car.Name">
                     <div class="card-body">
                         <h5 class="card-title">@car.Name</h5>
-                        <p class="card-text">@car.Price.ToString("C")</p>
-                        <a asp-controller="Cars" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
+                        <p class="card-text">@car.Price.ToString("C", System.Globalization.CultureInfo.CurrentCulture)</p>
+                        <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<AutoAppHoho.Models.Car>
+
+<h2>Beschikbare auto's</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Naam</th>
+            <th>Prijs</th>
+            <th>Afbeelding</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.Name</td>
+                <td>€@car.Price</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(car.ImagePath))
+                    {
+                        <img src="@car.ImagePath" alt="Car Image" width="100" />
+                    }
+                    else
+                    {
+                        <span>Geen afbeelding</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Create button hier toevoegen -->
+<a asp-action="Create" class="btn btn-success">Nieuwe auto toevoegen</a>

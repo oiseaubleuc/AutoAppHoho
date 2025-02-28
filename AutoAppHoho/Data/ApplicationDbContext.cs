@@ -16,6 +16,8 @@ namespace AutoAppHoho.Data
         public DbSet<FuelType> FuelTypes { get; set; } = default!;
         public DbSet<Category> Categories { get; set; } = default!;
         public DbSet<Nieuws> Nieuws { get; set; }
+        public DbSet<Advertentie> Advertenties { get; set; }
+
 
 
 

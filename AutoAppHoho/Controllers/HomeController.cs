@@ -1,8 +1,11 @@
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
+
 
 namespace AutoAppHoho.Controllers
 {
@@ -13,6 +16,20 @@ namespace AutoAppHoho.Controllers
         public HomeController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public IActionResult SetLanguage(string culture)
+        {
+            if (!string.IsNullOrEmpty(culture))
+            {
+                Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+                );
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)

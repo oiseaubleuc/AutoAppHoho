@@ -23,17 +23,16 @@ namespace AutoAppHoho.Models
         public FuelType? FuelType { get; set; }
         public Category? Category { get; set; }
 
+        public int Year { get; set; }
 
-        public string ImagePath { get; set; }
 
-
-        [NotMapped]
-        public IFormFile ImageFile { get; set; }
-
+        public string? ImagePath { get; set; }
 
 
         //voor de map
         public string Location { get; set; }
 
+        [NotMapped] // Dit wordt niet in de database opgeslagen, maar gebruikt voor upload
+        public IFormFile? ImageFile { get; set; }
     }
 }

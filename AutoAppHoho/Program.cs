@@ -1,8 +1,10 @@
-﻿using AutoAppHoho.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using AutoAppHoho.Data; // Zorg ervoor dat je de juiste namespace gebruikt
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // 1️⃣ **Database configureren**
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -12,7 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// 2️⃣ **Identity configureren, maar toegang open laten**
+// 2️⃣ **Identity configureren**
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false; // Login verplichting uitschakelen
@@ -21,6 +23,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+var supportedCultures = new[] { "nl", "en", "fr" };
+var localizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("nl") // Standaard Nederlands
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
 
 // 3️⃣ **Middleware configureren**
 if (app.Environment.IsDevelopment())
@@ -33,22 +43,15 @@ else
     app.UseHsts();
 }
 
-// **Optioneel: HTTPS alleen forceren in productie**
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 4️⃣ **Correcte routes**
+// 4️⃣ **Routes configureren**
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Cars}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

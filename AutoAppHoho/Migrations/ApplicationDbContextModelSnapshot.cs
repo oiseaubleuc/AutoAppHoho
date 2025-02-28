@@ -53,6 +53,31 @@ namespace AutoAppHoho.Migrations
                     b.ToTable("Admins");
                 });
 
+            modelBuilder.Entity("AutoAppHoho.Models.Advertentie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Beschrijving")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Advertenties");
+                });
+
             modelBuilder.Entity("AutoAppHoho.Models.Appointment", b =>
                 {
                     b.Property<int>("Id")
@@ -100,7 +125,6 @@ namespace AutoAppHoho.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -118,6 +142,9 @@ namespace AutoAppHoho.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

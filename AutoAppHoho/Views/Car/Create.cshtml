@@ -1,0 +1,55 @@
+﻿@model AutoAppHoho.Models.Car
+
+<h2>Nieuwe auto toevoegen</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label>Naam:</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+
+    <div>
+        <label>Prijs:</label>
+        <input asp-for="Price" class="form-control" type="number" required />
+    </div>
+
+    <div>
+        <label>Beschrijving:</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div>
+        <label>Brandstoftype:</label>
+        <select asp-for="FuelTypeId" class="form-control">
+            <option value="">Selecteer een brandstoftype</option>
+            @foreach (var type in ViewBag.FuelTypes)
+            {
+                <option value="@type.Id">@type.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label>Categorie:</label>
+        <select asp-for="CategoryId" class="form-control">
+            <option value="">Selecteer een categorie</option>
+            @foreach (var cat in ViewBag.Categories)
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label>Locatie:</label>
+        <input asp-for="Location" class="form-control" required />
+    </div>
+
+    <div>
+        <label>Afbeelding:</label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+    </div> 
+
+    <br />
+    <button type="submit" class="btn btn-success">Toevoegen</button>
+</form>

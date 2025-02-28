@@ -30,6 +30,21 @@ namespace AutoAppHoho.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Advertenties",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beschrijving = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Advertenties", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
@@ -124,6 +139,22 @@ namespace AutoAppHoho.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Invoices", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Nieuws",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titel = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Tekst = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Publicatiedatum = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Nieuws", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -240,10 +271,12 @@ namespace AutoAppHoho.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FuelTypeId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Views = table.Column<int>(type: "int", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -345,6 +378,9 @@ namespace AutoAppHoho.Migrations
                 name: "Admins");
 
             migrationBuilder.DropTable(
+                name: "Advertenties");
+
+            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
@@ -367,6 +403,9 @@ namespace AutoAppHoho.Migrations
 
             migrationBuilder.DropTable(
                 name: "Invoices");
+
+            migrationBuilder.DropTable(
+                name: "Nieuws");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
