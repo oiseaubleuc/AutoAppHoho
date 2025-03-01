@@ -8,6 +8,7 @@ using System.IO;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.Runtime.ConstrainedExecution;
 
 namespace AutoAppHoho.Controllers
 {
@@ -71,7 +72,7 @@ namespace AutoAppHoho.Controllers
 
                 if (image != null)
                 {
-                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "wwwroot/uploads/news");
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "wwwroot/uploads");
                     if (!Directory.Exists(uploadsFolder))
                     {
                         Directory.CreateDirectory(uploadsFolder);
@@ -85,9 +86,9 @@ namespace AutoAppHoho.Controllers
                         await image.CopyToAsync(fileStream);
                     }
 
-                    news.ImagePath = "/uploads/news" + uniqueFileName;
+                    news.ImagePath = $"/uploads/{uniqueFileName}";
                 }
-                
+
                 news.Publicatiedatum = DateTime.Now;
                 _context.Add(news);
                 await _context.SaveChangesAsync();

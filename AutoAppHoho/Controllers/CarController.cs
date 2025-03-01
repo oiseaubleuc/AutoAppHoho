@@ -87,5 +87,20 @@ namespace AutoAppHoho.Controllers
             ViewBag.Categories = _context.Categories.ToList();
             return View(car);
         }
+
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var car = await _context.Cars
+                .Include(c => c.FuelType)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (car == null)
+                return NotFound();
+
+            return View(car);
+        }
+
     }
 }

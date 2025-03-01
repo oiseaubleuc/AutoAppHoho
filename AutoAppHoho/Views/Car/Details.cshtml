@@ -1,0 +1,78 @@
+﻿@model AutoAppHoho.Models.Car
+
+@{
+    ViewData["Title"] = "Post details";
+}
+
+<h2 class="text-center">Post details:</h2>
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Linker kolom: Auto informatie -->
+        <div class="col-md-6">
+            <h2>@Model.Name</h2>
+            <h4>@Model.Year, @Model.Category?.Name, @Model.FuelType?.Name</h4>
+
+            <p><strong>Description</strong></p>
+            <p>@Model.Description</p>
+
+            <h5>Car extras</h5>
+            <ul>
+                <li><strong>Comfort:</strong> Electric windows, Heated seats, Leather seats</li>
+                <li><strong>Safety:</strong> ABS, Airbags, Parking sensors</li>
+                <li><strong>Other:</strong> Navigation system, Bluetooth, Cruise control</li>
+            </ul>
+
+            <div class="seller-info border p-3 mt-3">
+                <h5>Seller information:</h5>
+                <p><strong>Location:</strong> @Model.Location</p>
+                <p><strong>Contact:</strong> 06-12345678</p>
+            </div>
+        </div>
+
+        <!-- Rechter kolom: Auto afbeelding en carousel -->
+        <div class="col-md-6">
+            <div id="carImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="@Model.ImagePath" class="d-block w-100" alt="@Model.Name">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="@Model.ImagePath" class="d-block w-100" alt="@Model.Name">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="@Model.ImagePath" class="d-block w-100" alt="@Model.Name">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carImageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carImageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <div class="price-tag mt-3">
+                <span class="badge bg-warning text-dark fs-4">€@Model.Price</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="btn btn-secondary mt-3" asp-action="Index">Back to Listings</a>
+
+<style>
+    .seller-info {
+        background: #f8f9fa;
+        border-radius: 5px;
+    }
+    .carousel img {
+        height: 400px;
+        object-fit: cover;
+    }
+    .price-tag {
+        text-align: right;
+    }
+</style>
