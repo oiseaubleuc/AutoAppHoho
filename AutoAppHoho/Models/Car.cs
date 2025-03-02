@@ -32,6 +32,8 @@ namespace AutoAppHoho.Models
         //voor de map
         public string Location { get; set; }
 
+      
+
         [NotMapped] // Dit wordt niet in de database opgeslagen, maar gebruikt voor upload
         public IFormFile? ImageFile { get; set; }
     }

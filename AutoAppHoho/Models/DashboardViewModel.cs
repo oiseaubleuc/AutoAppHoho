@@ -10,7 +10,6 @@ namespace AutoAppHoho.Models
         public int TotalAdmins { get; set; }
         public int TotalInvoices { get; set; }
         public IEnumerable<Car> RecentCars { get; set; }
-        public IEnumerable<Appointment> RecentAppointments { get; set; }
 
     }
 }

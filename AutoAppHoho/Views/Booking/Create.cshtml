@@ -1,0 +1,38 @@
+﻿@model AutoAppHoho.Models.Booking
+
+@{
+    ViewData["Title"] = "Reserveer een Afspraak";
+}
+
+<h2>📅 Reserveer een Afspraak</h2>
+
+<form asp-action="Create" asp-controller="Booking" method="post">
+    <input type="hidden" asp-for="CarId" />
+
+    <div class="mb-3">
+        <label class="form-label">Voornaam</label>
+        <input asp-for="FirstName" class="form-control" required />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Achternaam</label>
+        <input asp-for="LastName" class="form-control" required />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">E-mail</label>
+        <input asp-for="Email" type="email" class="form-control" required />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Selecteer Datum en Tijd</label>
+        <input asp-for="BookingDate" type="datetime-local" class="form-control" required />
+        <span asp-validation-for="BookingDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">✅ Bevestig Boeking</button>
+    <a asp-controller="Car" asp-action="Details" asp-route-id="@Model.CarId" class="btn btn-secondary">🔙 Terug naar Auto</a>
+</form>

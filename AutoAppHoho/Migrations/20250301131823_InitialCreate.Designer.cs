@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoAppHoho.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250228173354_InitialCreate")]
+    [Migration("20250301131823_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -92,19 +92,24 @@ namespace AutoAppHoho.Migrations
                     b.Property<DateTime>("AppointmentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CarName")
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomerName")
+                    b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarId");
 
                     b.ToTable("Appointments");
                 });
@@ -145,6 +150,9 @@ namespace AutoAppHoho.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -504,6 +512,17 @@ namespace AutoAppHoho.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("AutoAppHoho.Models.Appointment", b =>
+                {
+                    b.HasOne("AutoAppHoho.Models.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("AutoAppHoho.Models.Car", b =>

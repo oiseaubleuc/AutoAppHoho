@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Localization;
 
 
 namespace AutoAppHoho.Controllers
@@ -18,20 +17,17 @@ namespace AutoAppHoho.Controllers
             _context = context;
         }
 
-        public IActionResult SetLanguage(string culture)
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
         {
-            if (!string.IsNullOrEmpty(culture))
-            {
-                Response.Cookies.Append(
-                    CookieRequestCultureProvider.DefaultCookieName,
-                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                    new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-                );
-            }
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
 
-            return Redirect(Request.Headers["Referer"].ToString());
+            return LocalRedirect(returnUrl);
         }
-
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)
         {
             // Haal de auto's op
@@ -64,6 +60,8 @@ namespace AutoAppHoho.Controllers
 
             return View(await cars.ToListAsync());
         }
+
+       
     }
 }
 

@@ -22,14 +22,40 @@ namespace AutoAppHoho.Controllers
             _environment = environment;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? fuelTypeId, int? categoryId, decimal? minPrice, decimal? maxPrice)
         {
-            var cars = _context.Cars.Include(c => c.FuelType).Include(c => c.Category).ToList();
-            return View(cars);
+            var cars = _context.Cars
+                .Include(c => c.FuelType)
+                .Include(c => c.Category)
+                .AsQueryable();
+
+            if (fuelTypeId.HasValue)
+            {
+                cars = cars.Where(c => c.FuelTypeId == fuelTypeId.Value);
+            }
+
+            if (categoryId.HasValue)
+            {
+                cars = cars.Where(c => c.CategoryId == categoryId.Value);
+            }
+
+            if (minPrice.HasValue)
+            {
+                cars = cars.Where(c => c.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                cars = cars.Where(c => c.Price <= maxPrice.Value);
+            }
+
+            ViewBag.FuelTypes = await _context.FuelTypes.ToListAsync();
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+
+            return View(await cars.ToListAsync());
         }
 
-    
-      
+
         public IActionResult Create()
         {
             ViewBag.FuelTypes = _context.FuelTypes.ToList();

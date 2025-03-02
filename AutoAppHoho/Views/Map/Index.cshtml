@@ -1,37 +1,143 @@
-﻿@model AutoAppHoho.Models.MapViewModel
+﻿@model List<AutoAppHoho.Models.Car>
 
-<div class="container-fluid">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>Auto's op Kaart</h2>
-        <a class="add-car-btn" href="/Map/Create">Voeg een nieuwe auto toe</a>
-        <p style="margin-top: auto; font-size: 0.9rem;">© 2025 - AutoAppHoho</p>
+@{
+    ViewData["Title"] = "Auto Locaties";
+}
+
+<h2 class="fw-bold text-center">📍 Auto Locaties</h2>
+
+<!-- ✅ Kaart -->
+<div id="map" style="height: 500px; border-radius: 8px;"></div>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-warning">@ViewBag.ErrorMessage</div>
+}
+else
+{
+    <!-- ✅ Lijst van beschikbare auto's -->
+    <h3 class="mt-4">📍 Beschikbare Auto's per Locatie</h3>
+    <ul class="list-group">
+        @foreach (var car in Model)
+        {
+            <li class="list-group-item d-flex align-items-center">
+                <span class="dot"></span>
+                <strong>@car.Name</strong> - @car.Location
+            </li>
+        }
+    </ul>
+
+    <!-- ✅ Swiper slider met auto’s -->
+    <div class="container mt-4">
+        <h2 class="fw-bold text-center mb-4">🚗 Beschikbare Auto's</h2>
+
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                @foreach (var car in Model)
+                {
+                    <div class="swiper-slide">
+                        <div class="card shadow-sm border-0">
+                            <img src="@car.ImagePath" class="card-img-top" alt="@car.Name">
+                            <div class="card-body">
+                                <h5 class="card-title">@car.Name</h5>
+                                <p class="card-text"><strong>Prijs:</strong>  € @car.Price </p>
+
+                                <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-warning btn-sm mt-2">Meer info</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Pijltjes voor navigatie -->
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+
+            <!-- Paginatie (optioneel) -->
+            <div class="swiper-pagination"></div>
+        </div>
     </div>
+}
 
-    <!-- Map Container -->
-    <div class="map-container">
-        <div id="map"></div>
-    </div>
-</div>
+@section Scripts {
+    <!-- ✅ Leaflet voor kaartweergave -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var map = L.map('map').setView([50.8503, 4.3517], 7); // België als standaardpositie
 
-<!-- Voeg Leaflet.js toe -->
-<script>
-    // Initialiseer de kaart
-    var map = L.map('map').setView([51.2194, 4.4025], 6); // Centraal in België
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
 
-    // Voeg een kaartlaag toe
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+            var cars = @Html.Raw(Json.Serialize(Model));
 
-    // Voeg markers toe (voorbeeld)
-    var carLocations = [
-        { name: "Brussel", location: [50.8503, 4.3517] },
-        { name: "Antwerpen", location: [51.2194, 4.4025] },
-        { name: "Gent", location: [51.0543, 3.7174] }
-    ];
+            cars.forEach(car => {
+                if (car.location) {
+                    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(car.location)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length > 0) {
+                                let lat = data[0].lat;
+                                let lon = data[0].lon;
 
-    carLocations.forEach(function (car) {
-        L.marker(car.location).addTo(map).bindPopup(car.name);
-    });
-</script>
+                                L.marker([lat, lon])
+                                    .addTo(map)
+                                    .bindPopup(`<b>${car.name}</b><br>${car.location}`);
+                            }
+                        })
+                        .catch(error => console.error('Geocodeerfout:', error));
+                }
+            });
+        });
+    </script>
+
+    <!-- ✅ Swiper.js voor carrousel -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var swiper = new Swiper('.swiper-container', {
+                slidesPerView: 3,
+                spaceBetween: 20,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    768: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .dot {
+        height: 12px;
+        width: 12px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .swiper-container {
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .swiper-slide {
+        width: 300px;
+        text-align: center;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>

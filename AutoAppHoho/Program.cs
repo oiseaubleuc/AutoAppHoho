@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using AutoAppHoho.Data; // Zorg ervoor dat je de juiste namespace gebruikt
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
+using AutoAppHoho.Data;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-// 1️⃣ **Database configureren**
+// 1️⃣ **Database Configuration**
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -14,25 +17,41 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// 2️⃣ **Identity configureren**
+// 2️⃣ **Identity Configuration**
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false; // Login verplichting uitschakelen
+    options.SignIn.RequireConfirmedAccount = false;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddControllersWithViews();
+// 3️⃣ **Localization Configuration**
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var supportedCultures = new[]
+{
+    new CultureInfo("nl"),
+    new CultureInfo("en"),
+    new CultureInfo("fr")
+};
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("nl");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
+
+// ✅ **Register View Localization**
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 var app = builder.Build();
 
-var supportedCultures = new[] { "nl", "en", "fr" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("nl") // Standaard Nederlands
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
-
+// 4️⃣ **Enable Localization Middleware**
+var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(localizationOptions);
 
-// 3️⃣ **Middleware configureren**
+// 5️⃣ **Middleware Configuration**
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -48,7 +67,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 4️⃣ **Routes configureren**
+// 6️⃣ **Routes Configuration**
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -56,3 +75,4 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+

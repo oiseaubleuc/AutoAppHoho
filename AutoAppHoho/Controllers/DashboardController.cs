@@ -17,24 +17,20 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Index()
     {
-        try
-        {
-            var dashboardViewModel = new DashboardViewModel
-            {
-                TotalCars = await _context.Cars.CountAsync(),
-                TotalAppointments = await _context.Appointments.CountAsync(),
-                TotalAdmins = await _context.Admins.CountAsync(),
-                TotalInvoices = await _context.Invoices.CountAsync(),
-                RecentCars = await _context.Cars.OrderByDescending(c => c.Id).Take(5).ToListAsync(),
-                RecentAppointments = await _context.Appointments.OrderByDescending(a => a.AppointmentDate).Take(5).ToListAsync(),
-            };
+        var totalCars = await _context.Cars.CountAsync();
+        var totalInvoices = await _context.Invoices.CountAsync();
 
-            return View(dashboardViewModel);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading dashboard: {ex.Message}");
-            throw;
-        }
+        var recentCars = await _context.Cars
+            .Include(c => c.FuelType)
+            .Include(c => c.Category)
+            .OrderByDescending(c => c.Id)
+            .Take(5)
+            .ToListAsync();
+
+        ViewBag.TotalCars = totalCars;
+        ViewBag.TotalInvoices = totalInvoices;
+        ViewBag.RecentCars = recentCars ?? new List<Car>(); // ✅ Ensure it's never null
+
+        return View();
     }
 }

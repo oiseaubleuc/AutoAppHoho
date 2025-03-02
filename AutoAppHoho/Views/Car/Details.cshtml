@@ -4,7 +4,22 @@
     ViewData["Title"] = "Post details";
 }
 
-<h2 class="text-center">Post details:</h2>
+<h2 class="text-center">Post details:</h2> 
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+<div class="mt-4">
+    <a asp-controller="Booking" asp-action="Create" asp-route-carId="@Model.Id" class="btn btn-primary">
+        📅 Reserveer een Afspraak
+    </a>
+</div>
+
 
 <div class="container mt-4">
     <div class="row">
@@ -26,7 +41,7 @@
             <div class="seller-info border p-3 mt-3">
                 <h5>Seller information:</h5>
                 <p><strong>Location:</strong> @Model.Location</p>
-                <p><strong>Contact:</strong> 06-12345678</p>
+                <p><strong>Contact:</strong>+32 484621918</p>
             </div>
         </div>
 

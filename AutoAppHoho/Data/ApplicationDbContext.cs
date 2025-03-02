@@ -17,12 +17,12 @@ namespace AutoAppHoho.Data
         public DbSet<Category> Categories { get; set; } = default!;
         public DbSet<Nieuws> Nieuws { get; set; }
         public DbSet<Advertentie> Advertenties { get; set; }
+        public DbSet<Booking> Bookings { get; set; } // New Table for Bookings
 
 
 
 
-        public DbSet<Admin> Admins { get; set; } = default!;
-        public DbSet<Appointment> Appointments { get; set; } = default!;
+
         public DbSet<Invoice> Invoices { get; set; } = default!;
 
 

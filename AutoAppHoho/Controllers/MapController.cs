@@ -18,20 +18,20 @@ namespace AutoAppHoho.Controllers
         }
 
         // Index Action (to display map)
-        public async Task<IActionResult> Index()
-        {
-            var carsWithLocations = await _context.Cars
-                .Where(c => !string.IsNullOrEmpty(c.Location))
-                .Select(c => new
-                {
-                    c.Name,
-                    c.Location
-                })
-                .ToListAsync();
 
-            ViewBag.Cars = carsWithLocations; // Pass the data to the view
-            return View();
+        public IActionResult Index()
+        {
+            var cars = _context.Cars.ToList();
+
+            if (!cars.Any())
+            {
+                ViewBag.ErrorMessage = "Geen auto's gevonden.";
+            }
+
+            return View(cars);
         }
+
+
 
         // Create Action (to add a new car)
         [HttpGet]
