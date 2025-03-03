@@ -1,17 +1,24 @@
-﻿@model IEnumerable<AutoAppHoho.Models.Car>
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<AutoAppHoho.Resources.SharedResource> localizer
+@model IEnumerable<AutoAppHoho.Models.Car>
 
 <div class="container mt-5">
-    <h1 class="text-center">Welkom op de beste auto marktplaats!</h1>
+    <h1 class="text-center">@localizer["Welkom op de beste auto marktplaats!"]</h1>
+
     <div class="text-center">
         <img src="~/uploads/luxury.png" class="img-fluid rounded shadow" alt="Auto Markt">
     </div>
 
     <div class="text-center mt-4">
-        <a asp-controller="Car" asp-action="Index" class="btn btn-lg btn-primary">Bekijk alle advertenties</a>
-        <button class="btn btn-secondary">Bekijk site statistieken</button>
+        <a asp-controller="Car" asp-action="Index" class="btn btn-lg btn-primary">
+            @localizer["Bekijk alle advertenties"]
+        </a>
+        <button class="btn btn-secondary">
+            @localizer["Bekijk site statistieken"]
+        </button>
     </div>
 
-    <h2 class="mt-5">Laatste posts:</h2>
+    <h2 class="mt-5">@localizer["Laatste posts:"]</h2>
     <div class="row">
         @foreach (var car in Model.Take(5))
         {
@@ -19,8 +26,12 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">@car.Name</h5>
-                        <p class="card-text">@car.Price.ToString("C", System.Globalization.CultureInfo.CurrentCulture)</p>
-                        <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">Bekijk meer</a>
+                        <p class="card-text">
+                            @car.Price.ToString("C", System.Globalization.CultureInfo.CurrentCulture)
+                        </p>
+                        <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">
+                            @localizer["Bekijk meer"]
+                        </a>
                     </div>
                 </div>
             </div>

@@ -128,5 +128,17 @@ namespace AutoAppHoho.Controllers
             return View(car);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var cars = _context.Cars
+                .Where(c => c.Name.Contains(searchTerm) || c.FuelType.Name.Contains(searchTerm))
+                .Select(c => new { c.Id, c.Name, c.Price, FuelType = c.FuelType.Name })
+                .ToList();
+
+            return Json(cars);
+        }
+
+
     }
 }

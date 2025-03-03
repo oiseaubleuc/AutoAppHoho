@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using AutoAppHoho.Data;
+using AutoAppHoho.Resources; 
 using System.Globalization;
+using AutoAppHoho.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -40,10 +42,14 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
 });
 
-// ✅ **Register View Localization**
+// ✅ **Register View & Data Annotation Localization**
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
-    .AddDataAnnotationsLocalization();
+    .AddDataAnnotationsLocalization(options =>
+    {
+        var type = typeof(SharedResource);
+        options.DataAnnotationLocalizerProvider = (t, factory) => factory.Create(type);
+    });
 
 var app = builder.Build();
 
@@ -60,7 +66,11 @@ else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+
 }
+app.UseRequestLogging();
+app.UseErrorHandling(); 
+
 
 app.UseStaticFiles();
 app.UseRouting();
@@ -75,4 +85,3 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-

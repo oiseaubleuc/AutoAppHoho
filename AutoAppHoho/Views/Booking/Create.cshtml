@@ -5,34 +5,62 @@
 }
 
 <h2>📅 Reserveer een Afspraak</h2>
+<div class="container mt-5">
+    <h2>📅 Reserveer een Afspraak</h2>
 
-<form asp-action="Create" asp-controller="Booking" method="post">
-    <input type="hidden" asp-for="CarId" />
+    <form id="bookingForm">
+        <input type="hidden" id="carId" value="@Model.CarId" />
 
-    <div class="mb-3">
-        <label class="form-label">Voornaam</label>
-        <input asp-for="FirstName" class="form-control" required />
-        <span asp-validation-for="FirstName" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Voornaam</label>
+            <input type="text" id="firstName" class="form-control" required />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Achternaam</label>
-        <input asp-for="LastName" class="form-control" required />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Achternaam</label>
+            <input type="text" id="lastName" class="form-control" required />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">E-mail</label>
-        <input asp-for="Email" type="email" class="form-control" required />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input type="email" id="email" class="form-control" required />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Selecteer Datum en Tijd</label>
-        <input asp-for="BookingDate" type="datetime-local" class="form-control" required />
-        <span asp-validation-for="BookingDate" class="text-danger"></span>
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Selecteer Datum en Tijd</label>
+            <input type="datetime-local" id="bookingDate" class="form-control" required />
+        </div>
 
-    <button type="submit" class="btn btn-warning">✅ Bevestig Boeking</button>
-    <a asp-controller="Car" asp-action="Details" asp-route-id="@Model.CarId" class="btn btn-secondary">🔙 Terug naar Auto</a>
-</form>
+        <button type="submit" class="btn btn-success">✅ Bevestig Boeking</button>
+    </form>
+
+    <div id="bookingMessage" class="mt-3"></div>
+</div>
+
+<script>
+    $("#bookingForm").submit(function (event) {
+        event.preventDefault();
+
+        let bookingData = {
+            CarId: $("#carId").val(),
+            FirstName: $("#firstName").val(),
+            LastName: $("#lastName").val(),
+            Email: $("#email").val(),
+            BookingDate: $("#bookingDate").val()
+        };
+
+        $.ajax({
+            url: "/Booking/CreateAjax",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(bookingData),
+            success: function (response) {
+                $("#bookingMessage").html(`<div class="alert alert-success">${response.message}</div>`);
+                $("#bookingForm")[0].reset();
+            },
+            error: function () {
+                $("#bookingMessage").html(`<div class="alert alert-danger">Fout bij boeken. Probeer opnieuw.</div>`);
+            }
+        });
+    });
+</script>

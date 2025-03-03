@@ -1,16 +1,10 @@
-﻿@model IEnumerable<AutoAppHoho.Models.Car>
-
-@{
-    ViewData["Title"] = "Car Listings";
-}
-<div class="mb-3">
+﻿<div class="mb-3">
     <a asp-controller="Car" asp-action="Create" class="btn btn-success">➕ Nieuwe Auto Toevoegen</a>
 </div>
 
 <div class="container mt-4">
     <h2 class="text-center fw-bold">🚗 Auto Overzicht</h2>
 
-    <!-- ✅ FILTER FORM -->
     <form asp-action="Index" method="get" class="row g-3 mb-4">
         <div class="col-md-3">
             <label class="form-label fw-bold">⛽ Brandstoftype</label>
@@ -49,11 +43,14 @@
         </div>
     </form>
 
-    <!-- ✅ LIST OF CARS -->
-    <div class="row">
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="🔎 Zoek een auto...">
+    </div>
+
+    <div id="carList" class="row">
         @foreach (var car in Model)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 car-item">
                 <div class="card shadow">
                     @if (!string.IsNullOrEmpty(car.ImagePath))
                     {
@@ -75,3 +72,35 @@
         }
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#searchInput").keyup(function () {
+            let searchText = $(this).val();
+            $.ajax({
+                url: "/Car/Search",
+                type: "GET",
+                data: { search: searchText },
+                success: function (data) {
+                    let carList = $("#carList");
+                    carList.html("");
+                    data.forEach(car => {
+                        carList.append(`
+                                <div class="col-md-4 mb-4">
+                                    <div class="card shadow">
+                                        <img src="${car.imagePath ? car.imagePath : '/images/no-image.png'}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <h5 class="card-title fw-bold">${car.name}</h5>
+                                            <p class="card-text text-muted">${car.fuelType} | ${car.category}</p>
+                                            <p class="text-success fw-bold">€${car.price.toFixed(2)}</p>
+                                            <a href="/Car/Details/${car.id}" class="btn btn-outline-primary w-100">📄 Meer Info</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `);
+                    });
+                }
+            });
+        });
+    });
+</script>
