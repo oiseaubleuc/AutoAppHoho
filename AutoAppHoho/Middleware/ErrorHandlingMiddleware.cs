@@ -25,7 +25,7 @@ namespace AutoAppHoho.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "[ERROR] Er is een fout opgetreden: {Message}", ex.Message);
-                context.Response.Redirect("/Home/Error"); // Stuur gebruiker naar foutpagina
+                context.Response.Redirect("/Home/Error"); 
             }
         }
     }

@@ -73,7 +73,6 @@ namespace AutoAppHoho.Controllers
                 {
                     if (car.ImageFile != null)
                     {
-                        // File Upload Logic
                         var fileName = Path.GetFileNameWithoutExtension(car.ImageFile.FileName);
                         var extension = Path.GetExtension(car.ImageFile.FileName);
                         var uniqueFileName = $"{fileName}_{Guid.NewGuid()}{extension}";
@@ -108,7 +107,6 @@ namespace AutoAppHoho.Controllers
                 Console.WriteLine($"General Error: {ex.Message}");
             }
 
-            // Reload dropdown values in case of an error
             ViewBag.FuelTypes = _context.FuelTypes.ToList();
             ViewBag.Categories = _context.Categories.ToList();
             return View(car);
