@@ -5,7 +5,7 @@ using AutoAppHoho.Models;
 
 namespace AutoAppHoho.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -17,12 +17,7 @@ namespace AutoAppHoho.Data
         public DbSet<Category> Categories { get; set; } = default!;
         public DbSet<Nieuws> Nieuws { get; set; }
         public DbSet<Advertentie> Advertenties { get; set; }
-        public DbSet<Booking> Bookings { get; set; } // New Table for Bookings
-
-
-
-
-
+        public DbSet<Booking> Bookings { get; set; } 
         public DbSet<Invoice> Invoices { get; set; } = default!;
 
 
@@ -53,8 +48,18 @@ namespace AutoAppHoho.Data
                 new FuelType { Id = 4, Name = "Hybride" }
             );
 
-          
-
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                 new ApplicationUser
+                 {
+                     Id = "admin-user-id",  // ✅ Id is nu beschikbaar
+                     UserName = "admin",    // ✅ Gebruik "UserName" in plaats van "Username"
+                     Email = "admin@autoapphoho.com",
+                     Voornaam = "Admin",
+                     Achternaam = "User",
+                     PhoneNumber = "0123456789",
+                     EmailConfirmed = true  // ✅ Werkt nu correct
+                 }
+             );
         }
     }
 }

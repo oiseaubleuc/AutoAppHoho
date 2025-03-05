@@ -4,6 +4,7 @@ using AutoAppHoho.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoAppHoho.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304145214_UpdateApplicationUser")]
+    partial class UpdateApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -508,13 +511,13 @@ namespace AutoAppHoho.Migrations
                         {
                             Id = "admin-user-id",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e7745171-de0b-40a1-bd71-b138d930a703",
+                            ConcurrencyStamp = "c61a5e86-cad0-4155-adce-6c013f5bab33",
                             Email = "admin@autoapphoho.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             PhoneNumber = "0123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ba77e7e6-a17e-45a0-8c77-3def9aea4517",
+                            SecurityStamp = "c06fc0b0-0237-401b-ae3a-873d1bd88eb9",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Achternaam = "User",
