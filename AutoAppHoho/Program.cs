@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
 using AutoAppHoho.Resources;
 using System.Globalization;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ✅ 1. Database configureren
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -18,48 +19,57 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false;
-    options.User.RequireUniqueEmail = true; // Email moet uniek zijn
-    options.Password.RequiredLength = 6; // Minimaal 6 tekens
-    options.Password.RequireDigit = true; // Vereist minstens één cijfer
-    options.Password.RequireUppercase = false; // Geen hoofdletter verplicht
-    options.Password.RequireLowercase = true; // Minstens één kleine letter
-    options.Password.RequireNonAlphanumeric = false; // Geen speciale tekens verplicht
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login"; // Login pagina
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied"; // Toegang geweigerd pagina
-});
-
+// ✅ 2. Lokalisatie instellen
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
     {
-        new CultureInfo("nl"),
         new CultureInfo("en"),
-        new CultureInfo("fr")
+        new CultureInfo("nl")
     };
-
     options.DefaultRequestCulture = new RequestCulture("nl");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
 
-builder.Services.AddSingleton<IStringLocalizerFactory, ResourceManagerStringLocalizerFactory>();
+// ✅ 3. Identity Services Correct Configureren
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
+// 🔥 **Belangrijk: UserManager en SignInManager expliciet toevoegen**
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
+builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+
+// ✅ 4. Cookies instellen voor login
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
+// ✅ 5. Voeg controllers, views en Razor Pages toe
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
-builder.Services.AddRazorPages();
 
+builder.Services.AddRazorPages(); // **🔥 BELANGRIJK! Activeert Identity UI**
+
+// ✅ 6. Dependency Injection voor lokalisatie
+builder.Services.AddSingleton<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
+
+// ✅ 7. Applicatie bouwen
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -76,12 +86,19 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+
+// ✅ 8. RequestLocalization gebruiken
+var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(locOptions);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+// ✅ 9. Routes instellen
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+
+app.MapRazorPages(); // **🔥 BELANGRIJK! Activeert Identity UI**
+
 app.Run();

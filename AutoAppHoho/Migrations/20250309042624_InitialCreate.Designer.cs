@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoAppHoho.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250307121646_InitialCreate")]
+    [Migration("20250309042624_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
