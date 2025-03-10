@@ -7,6 +7,8 @@ using AutoAppHoho.Data;
 using AutoAppHoho.Models;
 using AutoAppHoho.Resources;
 using System.Globalization;
+using AutoAppHoho.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,9 +50,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// 🔥 **Belangrijk: UserManager en SignInManager expliciet toevoegen**
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
+
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+
+
 
 // ✅ 4. Cookies instellen voor login
 builder.Services.ConfigureApplicationCookie(options =>
@@ -64,7 +70,7 @@ builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-builder.Services.AddRazorPages(); // **🔥 BELANGRIJK! Activeert Identity UI**
+builder.Services.AddRazorPages(); 
 
 // ✅ 6. Dependency Injection voor lokalisatie
 builder.Services.AddSingleton<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
@@ -99,6 +105,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages(); // **🔥 BELANGRIJK! Activeert Identity UI**
+app.MapRazorPages();
 
 app.Run();

@@ -11,7 +11,6 @@ namespace AutoAppHoho.Data
         {
             string adminEmail = "admin@autoapphoho.com";
 
-            // Controleer of de admin al bestaat
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)
