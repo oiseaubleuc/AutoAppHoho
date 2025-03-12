@@ -21,16 +21,29 @@ namespace AutoAppHoho.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
+        [HttpGet]
+        [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
-            Response.Cookies.Append(
-                CookieRequestCultureProvider.DefaultCookieName,
-                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-            );
+            if (!string.IsNullOrEmpty(culture))
+            {
+                Response.Cookies.Append(
+                    CookieRequestCultureProvider.DefaultCookieName,
+                    CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                    new CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddYears(1),
+                        IsEssential = true, // Zorgt ervoor dat cookies niet worden geblokkeerd door de GDPR-instellingen
+                        Path = "/"
+                    }
+                );
+            }
 
-            return LocalRedirect(returnUrl);
+            return LocalRedirect(returnUrl ?? "/");
         }
+
+
 
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)
         {

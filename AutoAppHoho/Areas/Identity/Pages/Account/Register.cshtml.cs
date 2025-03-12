@@ -116,8 +116,11 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
+
             if (ModelState.IsValid)
             {
+                Console.WriteLine("🔵 Registratieproces gestart.");
+
                 var user = new ApplicationUser
                 {
                     UserName = Input.UserName,
@@ -130,20 +133,30 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    Console.WriteLine("✅ Gebruiker succesvol aangemaakt!");
+                    _logger.LogInformation("Gebruiker succesvol geregistreerd.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
 
+                Console.WriteLine("❌ Registratie mislukt: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+
+                // Toon fouten in de frontend
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+            else
+            {
+                Console.WriteLine("❌ ModelState is NIET geldig!");
+            }
 
             return Page();
         }
+
+
 
 
 

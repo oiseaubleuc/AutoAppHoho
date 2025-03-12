@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using AutoAppHoho.Data;
@@ -9,6 +8,7 @@ using AutoAppHoho.Resources;
 using System.Globalization;
 using AutoAppHoho.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// ✅ 2. Lokalisatie instellen
+// ✅ 2. Localization instellen (betere configuratie)
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -29,14 +29,16 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     var supportedCultures = new[]
     {
         new CultureInfo("en"),
+        new CultureInfo("fr"),
         new CultureInfo("nl")
     };
+
     options.DefaultRequestCulture = new RequestCulture("nl");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
 
-// ✅ 3. Identity Services Correct Configureren
+// ✅ 3. Identity configureren
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -48,34 +50,34 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddDefaultUI();
 
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
-
+// ✅ 4. Dependency Injection voor Identity services
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 
-
-
-// ✅ 4. Cookies instellen voor login
+// ✅ 5. Cookies instellen voor login/authentication
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-// ✅ 5. Voeg controllers, views en Razor Pages toe
+// ✅ 6. Voeg Controllers, Razor Pages en Views toe met Localisatie
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
-builder.Services.AddRazorPages(); 
+builder.Services.AddRazorPages();
 
-// ✅ 6. Dependency Injection voor lokalisatie
-builder.Services.AddSingleton<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
+// ✅ 7. Dependency Injection voor lokalisatie
+builder.Services.AddSingleton<IStringLocalizerFactory, ResourceManagerStringLocalizerFactory>();
+builder.Services.AddScoped<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
 
-// ✅ 7. Applicatie bouwen
+// ✅ 8. Applicatie bouwen en middleware instellen
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -93,14 +95,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ✅ 8. RequestLocalization gebruiken
+// ✅ 9. RequestLocalization gebruiken - BELANGRIJK!
 var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(locOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ 9. Routes instellen
+// ✅ 10. Routes instellen
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

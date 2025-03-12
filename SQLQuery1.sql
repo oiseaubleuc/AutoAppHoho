@@ -1,1 +1,1 @@
-SELECT Id, UserName, Email, PhoneNumber FROM AspNetUsers;
+SELECT UserName, Email, Voornaam, Achternaam FROM AspNetUsers;

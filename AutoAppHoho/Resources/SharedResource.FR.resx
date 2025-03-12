@@ -117,20 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="WelcomeMessage" xml:space="preserve">
-    <value>Bienvenue sur AutoAppHoho!
-</value>
-  </data>
-  <data name="AddCar " xml:space="preserve">
-    <value>Ajouter une voiture
-</value>
-  </data>
-  <data name="SwitchLanguage " xml:space="preserve">
-    <value>Changer de langue
-</value>
-  </data>
-  <data name="ViewAllAds" xml:space="preserve">
-    <value>Voir toutes les annonces
-</value>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
   </data>
 </root>
