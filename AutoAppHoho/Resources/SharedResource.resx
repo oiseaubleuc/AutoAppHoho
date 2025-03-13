@@ -118,6 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Home" xml:space="preserve">
-    <value>Home</value>
+    <value>Home
+</value>
+  </data>
+  <data name="Cars" xml:space="preserve">
+    <value>Auto's</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Nieuws</value>
+  </data>
+  <data name="Advertisements" xml:space="preserve">
+    <value>Advertenties</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registreren</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Inloggen</value>
   </data>
 </root>

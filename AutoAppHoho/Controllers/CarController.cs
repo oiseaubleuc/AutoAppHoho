@@ -1,16 +1,15 @@
 ﻿using AutoAppHoho.Data;
 using AutoAppHoho.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-
 
 namespace AutoAppHoho.Controllers
 {
+    [Authorize] // 🔒 Alleen ingelogde gebruikers kunnen auto's beheren
     public class CarController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +21,8 @@ namespace AutoAppHoho.Controllers
             _environment = environment;
         }
 
+        // ✅ 🔹 Overzicht van alle auto's
+        [AllowAnonymous] // 🚀 Iedereen mag de lijst bekijken
         public async Task<IActionResult> Index(int? fuelTypeId, int? categoryId, decimal? minPrice, decimal? maxPrice)
         {
             var cars = _context.Cars
@@ -55,7 +56,7 @@ namespace AutoAppHoho.Controllers
             return View(await cars.ToListAsync());
         }
 
-
+        // ✅ 🔹 Nieuwe auto aanmaken (GET)
         public IActionResult Create()
         {
             ViewBag.FuelTypes = _context.FuelTypes.ToList();
@@ -63,6 +64,7 @@ namespace AutoAppHoho.Controllers
             return View();
         }
 
+        // ✅ 🔹 Nieuwe auto aanmaken (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Car car)
@@ -112,7 +114,8 @@ namespace AutoAppHoho.Controllers
             return View(car);
         }
 
-
+        // ✅ 🔹 Auto details bekijken
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var car = await _context.Cars
@@ -126,17 +129,78 @@ namespace AutoAppHoho.Controllers
             return View(car);
         }
 
+        // ✅ 🔹 Auto bewerken (GET)
+        public async Task<IActionResult> Edit(int id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            if (car == null)
+                return NotFound();
+
+            ViewBag.FuelTypes = _context.FuelTypes.ToList();
+            ViewBag.Categories = _context.Categories.ToList();
+            return View(car);
+        }
+
+        // ✅ 🔹 Auto bewerken (POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Car car)
+        {
+            if (id != car.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(car);
+
+            try
+            {
+                _context.Update(car);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Cars.Any(e => e.Id == car.Id))
+                    return NotFound();
+
+                throw;
+            }
+        }
+
+        // ✅ 🔹 Auto verwijderen (GET)
+        public async Task<IActionResult> Delete(int id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            if (car == null)
+                return NotFound();
+
+            return View(car);
+        }
+
+        // ✅ 🔹 Auto verwijderen (POST)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            if (car == null)
+                return NotFound();
+
+            _context.Cars.Remove(car);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // ✅ 🔹 Auto zoeken
         [HttpGet]
         public async Task<IActionResult> Search(string searchTerm)
         {
-            var cars = _context.Cars
+            var cars = await _context.Cars
                 .Where(c => c.Name.Contains(searchTerm) || c.FuelType.Name.Contains(searchTerm))
                 .Select(c => new { c.Id, c.Name, c.Price, FuelType = c.FuelType.Name })
-                .ToList();
+                .ToListAsync();
 
             return Json(cars);
         }
-
-
     }
 }
