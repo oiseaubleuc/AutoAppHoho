@@ -1,22 +1,19 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Options;
 using AutoAppHoho.Data;
 using AutoAppHoho.Models;
-using AutoAppHoho.Resources;
-using System.Globalization;
 using AutoAppHoho.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Localization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using AutoAppHoho.Resources;
+using Microsoft.Extensions.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ 1. Database configureren
+// 🔹 Database configuratie
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -25,75 +22,55 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// ✅ 2. Localization instellen (Correct ingesteld)
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-var supportedCultures = new[]
+// 🔹 Identity configuratie
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    new CultureInfo("en"),
-    new CultureInfo("fr"),
-    new CultureInfo("nl")
-};
-
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    options.DefaultRequestCulture = new RequestCulture("nl");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
-
-// ✅ 3. Identity configureren met verbeterde beveiliging
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false;
-    options.User.RequireUniqueEmail = true;
-    options.Password.RequiredLength = 6;
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequiredLength = 8;
     options.Password.RequireDigit = true;
-    options.Password.RequireUppercase = false;
+    options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredUniqueChars = 1;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
 })
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
-builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// ✅ 4. JWT-Authenticatie correct instellen
-var jwtKey = "JouwSuperGeheimeKey12345"; // 🔒 Verander dit in een ENV-variable!
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+// 🔹 JWT Configuratie
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
-            ValidateAudience = false,
+            ValidateIssuer = true,
+            ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = signingKey
+            IssuerSigningKey = signingKey,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"]
         };
     });
 
-// ✅ 5. Swagger API-documentatie correct geconfigureerd
-builder.Services.AddEndpointsApiExplorer();
+// 🔹 Swagger API configuratie
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "AutoAppHoho API",
-        Version = "v1",
-        Description = "API voor AutoAppHoho applicatie",
-        Contact = new OpenApiContact
-        {
-            Name = "Houdaifa Hamouchi",
-            Email = "oiseaubleu899@gmail.com",
-            Url = new Uri("https://github.com/oiseaubleuc")
-        }
-    });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "AutoAppHoho API", Version = "v1" });
 
-    // ✅ JWT-Authenticatie aan Swagger UI toevoegen
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -115,19 +92,17 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ✅ 6. Controllers, Razor Pages en Views toevoegen met lokalisatie
-builder.Services.AddControllersWithViews()
-    .AddViewLocalization()
-    .AddDataAnnotationsLocalization();
-
-builder.Services.AddRazorPages();
-
-// ✅ 7. Dependency Injection voor lokalisatie
+// 🔹 Cookie instellingen
+builder.Services.Configure<CookieTempDataProviderOptions>(options => {
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddSingleton<IStringLocalizerFactory, ResourceManagerStringLocalizerFactory>();
 builder.Services.AddScoped<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
 
 var app = builder.Build();
 
+// 🔹 Middleware instellen
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -135,7 +110,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AutoAppHoho API v1");
-        c.RoutePrefix = "swagger"; // Zorgt ervoor dat Swagger toegankelijk is via: https://localhost:PORT/swagger
+        c.RoutePrefix = "swagger";
     });
 }
 else
@@ -148,18 +123,29 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// ✅ 8. RequestLocalization correct instellen
-var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-app.UseRequestLocalization(locOptions);
-
-app.UseAuthentication(); // 🔒 Zorgt ervoor dat JWT wordt toegepast
+// 🔹 Identity Middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ 9. Routes correct instellen
+// 🔹 Rollen & Admin gebruiker seeden
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await SeedData.Initialize(services, userManager, roleManager);
+}
+
+
+// 🔹 Routes en API endpoints
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+// 🔹 API endpoints zoals in BasicCore7
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
 app.Run();

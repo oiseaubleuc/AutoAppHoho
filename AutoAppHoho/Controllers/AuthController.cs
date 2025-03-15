@@ -22,6 +22,32 @@ namespace AutoAppHoho.ApiControllers
             _signInManager = signInManager;
         }
 
+        // ✅ **Registreren van een nieuwe gebruiker**
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserRegisterModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return BadRequest(new { message = "User already exists" });
+
+            ApplicationUser user = new ApplicationUser
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return BadRequest(new { message = "User creation failed", errors = result.Errors });
+
+            return Ok(new { message = "User created successfully" });
+        }
+
+        // ✅ **Inloggen en JWT-token genereren**
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginModel model)
         {

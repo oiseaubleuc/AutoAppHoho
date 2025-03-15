@@ -1,39 +1,43 @@
-﻿using AutoAppHoho.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using AutoAppHoho.Models;
 
 namespace AutoAppHoho.Data
 {
     public static class SeedData
     {
-        public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task Initialize(IServiceProvider serviceProvider,
+                                            UserManager<ApplicationUser> userManager,
+                                            RoleManager<IdentityRole> roleManager)
         {
-            string adminEmail = "admin@autoapphoho.com";
+            string[] roleNames = { "Admin", "User" };
 
-            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-            if (adminUser == null)
+            foreach (var roleName in roleNames)
             {
-                adminUser = new ApplicationUser
+                if (!await roleManager.RoleExistsAsync(roleName))
                 {
-                    Id = Guid.NewGuid().ToString(), 
-                    UserName = "admin",
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            // Standaard Admin-gebruiker aanmaken als deze niet bestaat
+            string adminEmail = "admin@autoapphoho.com";
+            string adminPassword = "Admin123!";
+
+            if (await userManager.FindByEmailAsync(adminEmail) == null)
+            {
+                var adminUser = new ApplicationUser
+                {
+                    UserName = adminEmail,
                     Email = adminEmail,
-                    EmailConfirmed = true,
-                    Achternaam = "Administrator", 
-                    Voornaam = "Super", 
-                    PhoneNumber = "0123456789" 
+                    EmailConfirmed = true
                 };
 
-                var result = await userManager.CreateAsync(adminUser, "Admin123!");
-
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
                 if (result.Succeeded)
                 {
-                    if (!await roleManager.RoleExistsAsync("Admin"))
-                    {
-                        await roleManager.CreateAsync(new IdentityRole("Admin"));
-                    }
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
             }

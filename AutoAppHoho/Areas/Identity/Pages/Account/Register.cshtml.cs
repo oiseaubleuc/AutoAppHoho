@@ -113,48 +113,44 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl ??= Url.Content("~/");
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                Console.WriteLine("🔵 Registratieproces gestart.");
-
-                var user = new ApplicationUser
-                {
-                    UserName = Input.UserName,
-                    Email = Input.Email,
-                    Voornaam = Input.Voornaam,
-                    Achternaam = Input.Achternaam
-                };
-
-                var result = await _userManager.CreateAsync(user, Input.Password);
-
-                if (result.Succeeded)
-                {
-                    Console.WriteLine("✅ Gebruiker succesvol aangemaakt!");
-                    _logger.LogInformation("Gebruiker succesvol geregistreerd.");
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
-
-                Console.WriteLine("❌ Registratie mislukt: " + string.Join(", ", result.Errors.Select(e => e.Description)));
-
-                // Toon fouten in de frontend
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                _logger.LogWarning("ModelState is not valid.");
+                return Page();
             }
-            else
+
+            _logger.LogInformation("Register attempt for user: {UserName} with email {Email}", Input.UserName, Input.Email);
+
+            var user = new ApplicationUser
             {
-                Console.WriteLine("❌ ModelState is NIET geldig!");
+                UserName = Input.UserName,
+                Email = Input.Email,
+                Voornaam = Input.Voornaam,
+                Achternaam = Input.Achternaam,
+                PhoneNumber = Input.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User {UserName} created successfully.", Input.UserName);
+                return RedirectToPage("/Account/Login");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                _logger.LogError("Error creating user: {Error}", error.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
             }
 
             return Page();
         }
+
+
+
 
 
 
