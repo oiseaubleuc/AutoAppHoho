@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="WelcomeMessage" xml:space="preserve">
+    <value>Bienvenue sur le meilleur marché automobile !</value>
+  </data>
+	<data name="LatestPosts" xml:space="preserve">
+    <value>Dernières annonces :</value>
+  </data>
+	<data name="ViewAllListings" xml:space="preserve">
+    <value>Voir toutes les annonces</value>
+  </data>
+	<data name="ViewStatistics" xml:space="preserve">
+    <value>Voir les statistiques du site</value>
+  </data>
+</root>
