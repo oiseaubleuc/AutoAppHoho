@@ -1,12 +1,12 @@
-﻿using AutoAppHoho.Data;
-using AutoAppHoho.Models;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using AutoAppHoho.Resources;
+using AutoAppHoho.Data;
+using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using AutoAppHoho.Models;
 
 namespace AutoAppHoho.Controllers
 {
@@ -21,13 +21,12 @@ namespace AutoAppHoho.Controllers
             _localizer = localizer;
         }
 
-        [HttpGet]
         [HttpPost]
         public IActionResult ChangeLanguage(string culture, string returnUrl = "/")
         {
             if (string.IsNullOrEmpty(culture))
             {
-                return BadRequest("Invalid language selection.");
+                return BadRequest("Ongeldige taalkeuze.");
             }
 
             Response.Cookies.Append(
@@ -39,10 +38,10 @@ namespace AutoAppHoho.Controllers
             return LocalRedirect(returnUrl);
         }
 
-        // ✅ Verbeterde Index-methode
+
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)
         {
-            ViewData["Title"] = _localizer["Home"];
+            ViewData["WelcomeMessage"] = _localizer["Home"];
             ViewData["SearchPlaceholder"] = _localizer["SearchPlaceholder"];
             ViewData["FuelTypeLabel"] = _localizer["FuelType"];
             ViewData["CategoryLabel"] = _localizer["Category"];
@@ -54,7 +53,8 @@ namespace AutoAppHoho.Controllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                cars = cars.Where(c => c.Name.Contains(searchString));
+                searchString = searchString.ToLower();
+                cars = cars.Where(c => c.Name.ToLower().Contains(searchString));
             }
 
             if (fuelTypeId.HasValue)

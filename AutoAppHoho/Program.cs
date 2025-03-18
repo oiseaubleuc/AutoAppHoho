@@ -8,14 +8,13 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using AutoAppHoho.Resources;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ 1️⃣ **Database configuratie**
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -24,7 +23,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// ✅ 2️⃣ **Identity configuratie**
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -47,9 +45,10 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// ✅ 3️⃣ **JWT Configuratie**
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
+var jwtKey = jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key missing.");
+
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
 builder.Services.AddAuthentication()
     .AddJwtBearer(options =>
@@ -66,7 +65,6 @@ builder.Services.AddAuthentication()
         };
     });
 
-// ✅ 4️⃣ **Swagger API configuratie**
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "AutoAppHoho API", Version = "v1" });
@@ -90,72 +88,51 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ✅ 5️⃣ **Lokalisatie configuratie**
-builder.Services.Configure<CookieTempDataProviderOptions>(options =>
-{
-    options.Cookie.IsEssential = true;
-});
-
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
 builder.Services.AddScoped<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
 
-// ✅ 6️⃣ **Ondersteunde culturen instellen**
-var supportedCultures = new[] { new CultureInfo("en"), new CultureInfo("nl"), new CultureInfo("fr") };
+var supportedCultures = new[]
+{
+    new CultureInfo("nl"),
+    new CultureInfo("en-US"),
+    new CultureInfo("fr")
+};
+
 var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("en")
+    .SetDefaultCulture("nl")
     .AddSupportedCultures(supportedCultures.Select(c => c.Name).ToArray())
     .AddSupportedUICultures(supportedCultures.Select(c => c.Name).ToArray());
 
 var app = builder.Build();
 
-app.UseRequestLocalization(localizationOptions);
-
-// ✅ 7️⃣ **Middleware instellen**
-if (app.Environment.IsDevelopment())
-{
-    app.UseMigrationsEndPoint();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AutoAppHoho API v1");
-        c.RoutePrefix = "swagger";
-    });
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseRequestLocalization(localizationOptions);
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ✅ 8️⃣ **Rollen & Admin gebruiker seeden**
+app.UseSwagger();
+app.UseSwaggerUI();
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-    // Zorg ervoor dat deze functie correct async wordt aangeroepen
     await SeedData.Initialize(services, userManager, roleManager);
 }
 
-// ✅ 9️⃣ **Routes en API endpoints**
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.MapRazorPages();
 app.MapControllers();
+Language.InitLanguages();
 
 app.Run();
