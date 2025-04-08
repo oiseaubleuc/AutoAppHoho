@@ -88,10 +88,10 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [Phone]
-            [Display(Name = "Telefoonnummer")]
-            public string PhoneNumber { get; set; }
+            //[Required]
+            //[Phone]
+            //[Display(Name = "Telefoonnummer")]
+            //public string PhoneNumber { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "Het wachtwoord moet minstens {2} en maximaal {1} tekens lang zijn.", MinimumLength = 6)]
@@ -128,8 +128,8 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
                 UserName = Input.UserName,
                 Email = Input.Email,
                 Voornaam = Input.Voornaam,
-                Achternaam = Input.Achternaam,
-                PhoneNumber = Input.PhoneNumber
+                Achternaam = Input.Achternaam
+                //PhoneNumber = Input.PhoneNumber
             };
 
             var result = await _userManager.CreateAsync(user, Input.Password);

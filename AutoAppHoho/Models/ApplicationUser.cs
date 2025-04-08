@@ -11,7 +11,6 @@ namespace AutoAppHoho.Models
         [Required]
         public string Achternaam { get; set; }
 
-        public override string PhoneNumber { get; set; }
 
 
 

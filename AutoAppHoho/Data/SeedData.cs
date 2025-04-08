@@ -22,14 +22,17 @@ namespace AutoAppHoho.Data
                 }
             }
 
-            // Standaard Admin-gebruiker aanmaken als deze niet bestaat
             string adminEmail = "admin@autoapphoho.com";
             string adminPassword = "Admin123!";
+            string auto =  "auto";
+            string School = "School";
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var adminUser = new ApplicationUser
                 {
+                    Voornaam = auto,
+                    Achternaam = School, 
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true
