@@ -36,9 +36,6 @@ namespace AutoAppHoho.Controllers
                 return BadRequest("Taal niet ondersteund.");
             }
 
-            // ✅ Debugging: Print geselecteerde taal naar de console
-            Console.WriteLine($"🔵 Geselecteerde taal: {culture}");
-
             Response.Cookies.Append(
                 CookieRequestCultureProvider.DefaultCookieName,
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
@@ -50,16 +47,12 @@ namespace AutoAppHoho.Controllers
 
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)
         {
-            // ✅ ViewData met correcte keys, zoals ze in je .resx bestanden moeten staan
             ViewData["WelcomeMessage"] = _localizer["WelcomeMessage"];
             ViewData["SearchPlaceholder"] = _localizer["SearchPlaceholder"];
             ViewData["FuelTypeLabel"] = _localizer["FuelType"];
             ViewData["CategoryLabel"] = _localizer["Category"];
             ViewData["ViewAllListings"] = _localizer["ViewAllListings"];
             ViewData["LatestPosts"] = _localizer["LatestPosts"];
-
-            // ✅ Debugging: Print de huidige cultuur
-            Console.WriteLine($"🌍 Huidige cultuur: {CultureInfo.CurrentCulture.Name}");
 
             var cars = _context.Cars
                 .Include(c => c.FuelType)

@@ -1,10 +1,12 @@
-﻿@model IEnumerable<AutoAppHoho.Models.Nieuws>
+﻿@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<AutoAppHoho.Models.Nieuws>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Laatste Nieuws</h2>
+    <h2 class="mb-4">@Localizer["LatestNews"]</h2>
 
     <p>
-        <a asp-action="Create" class="btn btn-primary">Nieuw Nieuwsbericht</a>
+        <a asp-action="Create" class="btn btn-primary">@Localizer["CreateNews"]</a>
     </p>
 
     <div class="row">

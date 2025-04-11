@@ -1,15 +1,21 @@
-﻿<div class="mb-3">
-    <a asp-controller="Car" asp-action="Create" class="btn btn-success">➕ Nieuwe Auto Toevoegen</a>
+﻿@model IEnumerable<AutoAppHoho.Models.Car>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="mb-3">
+    <a asp-controller="Car" asp-action="Create" class="btn btn-success">
+        @Localizer["AddNewCar"]
+    </a>
 </div>
 
 <div class="container mt-4">
-    <h2 class="text-center fw-bold">🚗 Auto Overzicht</h2>
+    <h2 class="text-center fw-bold">@Localizer["CarOverview"]</h2>
 
     <form asp-action="Index" method="get" class="row g-3 mb-4">
         <div class="col-md-3">
-            <label class="form-label fw-bold">⛽ Brandstoftype</label>
+            <label class="form-label fw-bold">@Localizer["FuelTypeLabel"]</label>
             <select class="form-select" name="fuelTypeId">
-                <option value="">Alle</option>
+                <option value="">@Localizer["All"]</option>
                 @foreach (var type in ViewBag.FuelTypes)
                 {
                     <option value="@type.Id">@type.Name</option>
@@ -18,9 +24,9 @@
         </div>
 
         <div class="col-md-3">
-            <label class="form-label fw-bold">🚘 Categorie</label>
+            <label class="form-label fw-bold">@Localizer["CategoryLabel"]</label>
             <select class="form-select" name="categoryId">
-                <option value="">Alle</option>
+                <option value="">@Localizer["All"]</option>
                 @foreach (var cat in ViewBag.Categories)
                 {
                     <option value="@cat.Id">@cat.Name</option>
@@ -29,22 +35,22 @@
         </div>
 
         <div class="col-md-2">
-            <label class="form-label fw-bold">💰 Min. Prijs</label>
+            <label class="form-label fw-bold">@Localizer["MinPriceLabel"]</label>
             <input type="number" class="form-control" name="minPrice" placeholder="0">
         </div>
 
         <div class="col-md-2">
-            <label class="form-label fw-bold">💰 Max. Prijs</label>
+            <label class="form-label fw-bold">@Localizer["MaxPriceLabel"]</label>
             <input type="number" class="form-control" name="maxPrice" placeholder="50000">
         </div>
 
         <div class="col-md-2 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">🔍 Filteren</button>
+            <button type="submit" class="btn btn-primary w-100">@Localizer["FilterButton"]</button>
         </div>
     </form>
 
     <div class="mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="🔎 Zoek een auto...">
+        <input type="text" id="searchInput" class="form-control" placeholder="@Localizer["SearchPlaceholder"]">
     </div>
 
     <div id="carList" class="row">
@@ -65,7 +71,9 @@
                         <h5 class="card-title fw-bold">@car.Name</h5>
                         <p class="card-text text-muted">@car.FuelType?.Name | @car.Category?.Name</p>
                         <p class="text-success fw-bold">€@car.Price.ToString("N2")</p>
-                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-primary w-100">📄 Meer Info</a>
+                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-primary w-100">
+                            @Localizer["MoreInfo"]
+                        </a>
                     </div>
                 </div>
             </div>
@@ -93,7 +101,7 @@
                                             <h5 class="card-title fw-bold">${car.name}</h5>
                                             <p class="card-text text-muted">${car.fuelType} | ${car.category}</p>
                                             <p class="text-success fw-bold">€${car.price.toFixed(2)}</p>
-                                            <a href="/Car/Details/${car.id}" class="btn btn-outline-primary w-100">📄 Meer Info</a>
+                                            <a href="/Car/Details/${car.id}" class="btn btn-outline-primary w-100">@Localizer["MoreInfo"]</a>
                                         </div>
                                     </div>
                                 </div>

@@ -22,7 +22,10 @@
 	<data name="ViewAllListings" xml:space="preserve">
     <value>View all listings</value>
   </data>
-	<data name="ViewStatistics" xml:space="preserve">
+	<data name="ViewSiteStatistics" xml:space="preserve">
     <value>View site statistics</value>
+  </data>
+	<data name="ViewMore" xml:space="preserve">
+    <value>View more</value>
   </data>
 </root>

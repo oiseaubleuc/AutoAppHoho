@@ -1,7 +1,6 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.Extensions.Localization
-@inject IStringLocalizer<AutoAppHoho.Resources.SharedResource> Localizer
-@model IEnumerable<AutoAppHoho.Models.Car>
+﻿@model IEnumerable<AutoAppHoho.Models.Car>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="container mt-5">
     <h1>@Localizer["WelcomeMessage"]</h1>

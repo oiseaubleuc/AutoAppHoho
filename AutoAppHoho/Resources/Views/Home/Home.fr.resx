@@ -22,7 +22,7 @@
 	<data name="ViewAllListings" xml:space="preserve">
     <value>Voir toutes les annonces</value>
   </data>
-	<data name="ViewStatistics" xml:space="preserve">
+	<data name="ViewSiteStatistics" xml:space="preserve">
     <value>Voir les statistiques du site</value>
   </data>
 </root>
