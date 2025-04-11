@@ -7,19 +7,21 @@ using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AutoAppHoho.Models;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace AutoAppHoho.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IStringLocalizer<SharedResource> _localizer;
+        private readonly IViewLocalizer _localizer;
 
-        public HomeController(ApplicationDbContext context, IStringLocalizer<SharedResource> localizer)
+        public HomeController(ApplicationDbContext context, IViewLocalizer localizer)
         {
             _context = context;
             _localizer = localizer;
         }
+
 
         [HttpPost]
         public IActionResult ChangeLanguage(string culture, string returnUrl = "/")
@@ -47,12 +49,7 @@ namespace AutoAppHoho.Controllers
 
         public async Task<IActionResult> Index(string searchString, int? fuelTypeId, int? categoryId)
         {
-            ViewData["WelcomeMessage"] = _localizer["WelcomeMessage"];
-            ViewData["SearchPlaceholder"] = _localizer["SearchPlaceholder"];
-            ViewData["FuelTypeLabel"] = _localizer["FuelType"];
-            ViewData["CategoryLabel"] = _localizer["Category"];
-            ViewData["ViewAllListings"] = _localizer["ViewAllListings"];
-            ViewData["LatestPosts"] = _localizer["LatestPosts"];
+           
 
             var cars = _context.Cars
                 .Include(c => c.FuelType)

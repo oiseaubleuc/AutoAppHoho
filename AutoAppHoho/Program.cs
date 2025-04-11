@@ -94,21 +94,22 @@ builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
-builder.Services.AddScoped<IStringLocalizer<SharedResource>, StringLocalizer<SharedResource>>();
-
 var supportedCultures = new[]
 {
     new CultureInfo("nl"),
-    new CultureInfo("en-US"),
+    new CultureInfo("en"),
     new CultureInfo("fr")
 };
+
+var app = builder.Build(); 
 
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("nl")
     .AddSupportedCultures(supportedCultures.Select(c => c.Name).ToArray())
     .AddSupportedUICultures(supportedCultures.Select(c => c.Name).ToArray());
 
-var app = builder.Build();
+app.UseRequestLocalization(localizationOptions);
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
