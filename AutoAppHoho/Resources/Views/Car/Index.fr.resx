@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="AddNewCar" xml:space="preserve">
+    <value>Ajouter une voiture</value>
+  </data>
+	<data name="CarOverview" xml:space="preserve">
+    <value>Vue d’ensemble des voitures</value>
+  </data>
+	<data name="FuelTypeLabel" xml:space="preserve">
+    <value>Type de carburant</value>
+  </data>
+	<data name="CategoryLabel" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+	<data name="MinPriceLabel" xml:space="preserve">
+    <value>Prix min</value>
+  </data>
+	<data name="MaxPriceLabel" xml:space="preserve">
+    <value>Prix max</value>
+  </data>
+	<data name="FilterButton" xml:space="preserve">
+    <value>Filtrer</value>
+  </data>
+	<data name="SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher des voitures...</value>
+  </data>
+	<data name="MoreInfo" xml:space="preserve">
+    <value>Plus d’info</value>
+  </data>
+	<data name="All" xml:space="preserve">
+    <value>Tous</value>
+  </data>
+</root>

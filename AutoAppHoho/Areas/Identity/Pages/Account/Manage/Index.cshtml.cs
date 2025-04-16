@@ -56,6 +56,14 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+
+
+            [Display(Name = "Voornaam")]
+            public string FirstName { get; set; }
+
+            [Display(Name = "Achternaam")]
+            public string LastName { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -70,6 +78,8 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                FirstName = user.Voornaam,
+                LastName = user.Achternaam,
                 PhoneNumber = phoneNumber
             };
         }
@@ -86,6 +96,8 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
+      
+
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -99,6 +111,11 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+            if(user.Voornaam != Input.FirstName || user.Achternaam != Input.LastName) 
+            user.Voornaam = Input.FirstName;
+            user.Achternaam = Input.LastName;
+            await _userManager.UpdateAsync(user);
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
@@ -117,3 +134,4 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account.Manage
         }
     }
 }
+

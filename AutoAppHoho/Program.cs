@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using AutoAppHoho.Resources;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
+using NETCore.MailKit.Infrastructure.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString)
+           .LogTo(Console.WriteLine, LogLevel.Information));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -43,11 +45,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddDefaultUI();
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key missing.");
-
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
 builder.Services.AddAuthentication()
@@ -88,11 +94,17 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-builder.Services.AddControllersWithViews()
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-    .AddDataAnnotationsLocalization();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<MailKitOptions>(options =>
+{
+    options.Server = builder.Configuration["ExternalProviders:MailKit:SMTP:Address"];
+    options.Port = Convert.ToInt32(builder.Configuration["ExternalProviders:MailKit:SMTP:Port"]);
+    options.Account = builder.Configuration["ExternalProviders:MailKit:SMTP:Account"];
+    options.Password = builder.Configuration["ExternalProviders:MailKit:SMTP:Password"];
+    options.SenderEmail = builder.Configuration["ExternalProviders:MailKit:SMTP:SenderEmail"];
+    options.SenderName = builder.Configuration["ExternalProviders:MailKit:SMTP:SenderName"];
+    options.Security = true; 
+});
 
 var supportedCultures = new[]
 {
@@ -101,20 +113,17 @@ var supportedCultures = new[]
     new CultureInfo("fr")
 };
 
-var app = builder.Build(); 
-
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture("nl")
     .AddSupportedCultures(supportedCultures.Select(c => c.Name).ToArray())
     .AddSupportedUICultures(supportedCultures.Select(c => c.Name).ToArray());
 
+var app = builder.Build();
+
 app.UseRequestLocalization(localizationOptions);
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseRequestLocalization(localizationOptions);
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -132,8 +141,10 @@ using (var scope = app.Services.CreateScope())
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 app.MapControllers();
+
 Language.InitLanguages();
 
 app.Run();

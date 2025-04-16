@@ -2,6 +2,7 @@
 using AutoAppHoho.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
@@ -14,11 +15,14 @@ namespace AutoAppHoho.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IViewLocalizer _localizer;
 
-        public CarController(ApplicationDbContext context, IWebHostEnvironment environment)
+        public CarController(ApplicationDbContext context, IWebHostEnvironment environment, IViewLocalizer localizer)
         {
             _context = context;
             _environment = environment;
+            _localizer = localizer;
+
         }
 
         // ✅ 🔹 Overzicht van alle auto's

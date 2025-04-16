@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Login">
+		<value>Inloggen</value>
+	</data>
+	<data name="LocalLoginHeading">
+		<value>Gebruik een lokaal account om in te loggen.</value>
+	</data>
+	<data name="Email">
+		<value>E-mailadres</value>
+	</data>
+	<data name="Password">
+		<value>Wachtwoord</value>
+	</data>
+	<data name="RememberMe">
+		<value>Onthoud mij</value>
+	</data>
+	<data name="ForgotPassword">
+		<value>Wachtwoord vergeten?</value>
+	</data>
+	<data name="RegisterNewUser">
+		<value>Registreer als nieuwe gebruiker</value>
+	</data>
+	<data name="ResendConfirmation">
+		<value>Bevestigingsmail opnieuw verzenden</value>
+	</data>
+	<data name="ExternalLoginHeading">
+		<value>Gebruik een andere service om in te loggen.</value>
+	</data>
+	<data name="NoExternalProviders">
+		<value>Er zijn geen externe aanmeldservices geconfigureerd.</value>
+	</data>
+	<data name="LearnMore">
+		<value>Meer info</value>
+	</data>
+	<data name="LoginWith">
+		<value>Inloggen met</value>
+	</data>
+</root>

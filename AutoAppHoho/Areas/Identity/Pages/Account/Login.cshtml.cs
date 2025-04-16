@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace AutoAppHoho.Areas.Identity.Pages.Account
 {
@@ -22,11 +23,14 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IViewLocalizer _localizer;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+
+        public LoginModel(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IViewLocalizer localizer)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         /// <summary>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Register">
+		<value>Registreren</value>
+	</data>
+	<data name="UserName">
+		<value>Gebruikersnaam</value>
+	</data>
+	<data name="FirstName">
+		<value>Voornaam</value>
+	</data>
+	<data name="LastName">
+		<value>Achternaam</value>
+	</data>
+	<data name="Email">
+		<value>E-mailadres</value>
+	</data>
+	<data name="Password">
+		<value>Wachtwoord</value>
+	</data>
+	<data name="ConfirmPassword">
+		<value>Bevestig wachtwoord</value>
+	</data>
+	<data name="SubmitRegister">
+		<value>Registreer</value>
+	</data>
+	<data name="ExternalRegisterHeading">
+		<value>Gebruik een andere service om je te registreren.</value>
+	</data>
+	<data name="NoExternalProviders">
+		<value>Er zijn geen externe aanmeldservices geconfigureerd.</value>
+	</data>
+	<data name="LearnMore">
+		<value>Meer info</value>
+	</data>
+</root>

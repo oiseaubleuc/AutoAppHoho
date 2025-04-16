@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Register">
+		<value>Inscription</value>
+	</data>
+	<data name="UserName">
+		<value>Nom d’utilisateur</value>
+	</data>
+	<data name="FirstName">
+		<value>Prénom</value>
+	</data>
+	<data name="LastName">
+		<value>Nom</value>
+	</data>
+	<data name="Email">
+		<value>E-mail</value>
+	</data>
+	<data name="Password">
+		<value>Mot de passe</value>
+	</data>
+	<data name="ConfirmPassword">
+		<value>Confirmer le mot de passe</value>
+	</data>
+	<data name="SubmitRegister">
+		<value>S’inscrire</value>
+	</data>
+	<data name="ExternalRegisterHeading">
+		<value>Utilisez un autre service pour vous inscrire.</value>
+	</data>
+	<data name="NoExternalProviders">
+		<value>Aucun service d’authentification externe configuré.</value>
+	</data>
+	<data name="LearnMore">
+		<value>En savoir plus</value>
+	</data>
+</root>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Login">
+		<value>Login</value>
+	</data>
+	<data name="LocalLoginHeading">
+		<value>Use a local account to log in.</value>
+	</data>
+	<data name="Email">
+		<value>Email address</value>
+	</data>
+	<data name="Password">
+		<value>Password</value>
+	</data>
+	<data name="RememberMe">
+		<value>Remember me</value>
+	</data>
+	<data name="ForgotPassword">
+		<value>Forgot your password?</value>
+	</data>
+	<data name="RegisterNewUser">
+		<value>Register as a new user</value>
+	</data>
+	<data name="ResendConfirmation">
+		<value>Resend email confirmation</value>
+	</data>
+	<data name="ExternalLoginHeading">
+		<value>Use another service to log in.</value>
+	</data>
+	<data name="NoExternalProviders">
+		<value>There are no external authentication services configured.</value>
+	</data>
+	<data name="LearnMore">
+		<value>Learn more</value>
+	</data>
+	<data name="LoginWith">
+		<value>Login with</value>
+	</data>
+</root>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<data name="Login">
+		<value>Connexion</value>
+	</data>
+	<data name="LocalLoginHeading">
+		<value>Utilisez un compte local pour vous connecter.</value>
+	</data>
+	<data name="Email">
+		<value>Adresse e-mail</value>
+	</data>
+	<data name="Password">
+		<value>Mot de passe</value>
+	</data>
+	<data name="RememberMe">
+		<value>Se souvenir de moi</value>
+	</data>
+	<data name="ForgotPassword">
+		<value>Mot de passe oublié ?</value>
+	</data>
+	<data name="RegisterNewUser">
+		<value>S’inscrire comme nouvel utilisateur</value>
+	</data>
+	<data name="ResendConfirmation">
+		<value>Renvoyer la confirmation</value>
+	</data>
+	<data name="ExternalLoginHeading">
+		<value>Utilisez un autre service pour vous connecter.</value>
+	</data>
+	<data name="NoExternalProviders">
+		<value>Aucun service d’authentification externe configuré.</value>
+	</data>
+	<data name="LearnMore">
+		<value>En savoir plus</value>
+	</data>
+	<data name="LoginWith">
+		<value>Se connecter avec</value>
+	</data>
+</root>

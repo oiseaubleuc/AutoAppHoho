@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace AutoAppHoho.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,12 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IViewLocalizer _localizer;
 
-        public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
+
+        public RegisterModel( UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore, SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IViewLocalizer localizer)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +44,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _localizer = localizer;
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            _logger.LogInformation("Register attempt for user: {UserName} with email {Email}", Input.UserName, Input.Email);
+            _logger.LogInformation("Register attempt for user: {UserName} with email {Email}", Input.UserName, Input.Email, Input.Voornaam, Input.Achternaam);
 
             var user = new ApplicationUser
             {
@@ -132,13 +133,33 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
                 //PhoneNumber = Input.PhoneNumber
             };
 
+            await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+            // NOW create the user
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
             {
                 _logger.LogInformation("User {UserName} created successfully.", Input.UserName);
-                return RedirectToPage("/Account/Login");
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your account",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
             }
+
+
 
             foreach (var error in result.Errors)
             {
@@ -148,13 +169,6 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
 
             return Page();
         }
-
-
-
-
-
-
-
 
         private ApplicationUser CreateUser()
         {

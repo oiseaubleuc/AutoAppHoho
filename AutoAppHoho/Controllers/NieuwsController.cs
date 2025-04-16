@@ -9,6 +9,7 @@ using AutoAppHoho.Data;
 using AutoAppHoho.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.Runtime.ConstrainedExecution;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace AutoAppHoho.Controllers
 {
@@ -16,11 +17,15 @@ namespace AutoAppHoho.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IViewLocalizer _localizer;
 
-        public NieuwsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+
+        public NieuwsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, IViewLocalizer localizer)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _localizer = localizer;
+
         }
 
         // GET: Nieuws
