@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Localization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AutoAppHoho.Areas.Identity.Pages.Account
 {
@@ -122,7 +123,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
 
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, _localizer["InvalidLoginAttempt"].Value);
                 return Page();
             }
 
@@ -134,7 +135,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, _localizer["InvalidLoginAttempt"].Value);
                 return Page();
             }
         }

@@ -36,4 +36,8 @@
 	<data name="LoginWith">
 		<value>Inloggen met</value>
 	</data>
+	<data name="InvalidLoginAttempt" xml:space="preserve">
+  <value>Ongeldige inlogpoging.</value>
+</data>
+
 </root>

@@ -36,4 +36,8 @@
 	<data name="LoginWith">
 		<value>Login with</value>
 	</data>
+	<data name="InvalidLoginAttempt" xml:space="preserve">
+  <value>Invalid login attempt.</value>
+</data>
+
 </root>

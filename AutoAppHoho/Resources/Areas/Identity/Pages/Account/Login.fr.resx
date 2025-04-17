@@ -36,4 +36,8 @@
 	<data name="LoginWith">
 		<value>Se connecter avec</value>
 	</data>
+	<data name="InvalidLoginAttempt" xml:space="preserve">
+  <value>Tentative de connexion invalide.</value>
+</data>
+
 </root>
