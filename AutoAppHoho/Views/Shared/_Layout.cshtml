@@ -41,6 +41,17 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Nieuws" asp-action="Index">@Localizer["News"]</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="About" asp-action="Index">@Localizer["Over ons"]</a>
+                        </li>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="UserManagement" asp-action="Index">Gebruikersbeheer</a>
+                            </li>
+                        }
+
                      
                     </ul>
 
@@ -87,7 +98,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript voor Theme Toggle en Taalwisseling -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const toggleButton = document.getElementById("theme-toggle");

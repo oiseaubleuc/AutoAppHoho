@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\" />
-    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\uploads\news\" />
   </ItemGroup>
 

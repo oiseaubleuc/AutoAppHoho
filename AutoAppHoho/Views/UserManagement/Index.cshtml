@@ -1,0 +1,41 @@
+﻿@model IEnumerable<AutoAppHoho.Models.ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<AutoAppHoho.Models.ApplicationUser> UserManager
+
+
+@{
+    ViewData["Title"] = "Gebruikersbeheer";
+}
+
+<h2>Gebruikersbeheer</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Naam</th>
+            <th>Huidige Rol</th>
+            <th>Wijzig Rol</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.Voornaam @user.Achternaam</td>
+                <td>@string.Join(", ", await UserManager.GetRolesAsync(user))</td>
+                <td>
+                    <form asp-action="ChangeRole" method="post">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <select name="newRole" class="form-select">
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-primary mt-1">Opslaan</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

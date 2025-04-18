@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["Over ons"];
+}
+
+<h2>@Localizer["Over ons"]</h2>
+
+<div class="text-center my-4">
+    <img src="~/images/auto-banner.jpg" alt="Over ons - AutoAppHoho" class="img-fluid rounded shadow" />
+</div>
+
+<p>@Localizer["IntroText"]</p>
+<p>@Localizer["GoalText"]</p>
+<p>@Localizer["PassionText"]</p>

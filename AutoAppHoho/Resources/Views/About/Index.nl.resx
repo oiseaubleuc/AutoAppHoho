@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="Over ons" xml:space="preserve">
+    <value>Over ons</value>
+  </data>
+	<data name="IntroText" xml:space="preserve">
+    <value>Welkom bij AutoAppHoho – jouw digitale marktplaats voor kwaliteitsvolle auto’s. Wij brengen verkopers en kopers samen op een veilige, overzichtelijke en gebruiksvriendelijke manier. Of je nu je droomwagen zoekt of een betrouwbare tweedehandsauto wil verkopen, bij ons zit je goed.</value>
+  </data>
+	<data name="GoalText" xml:space="preserve">
+    <value>Ons doel is om de autohandel transparanter, sneller en toegankelijker te maken voor iedereen. Wij geloven in technologie die tijd bespaart, vertrouwen opbouwt en een eerlijke prijs garandeert.</value>
+  </data>
+	<data name="PassionText" xml:space="preserve">
+    <value>AutoAppHoho is gebouwd door autoliefhebbers, voor autoliefhebbers – met oog voor detail en een passie voor innovatie.</value>
+  </data>
+</root>

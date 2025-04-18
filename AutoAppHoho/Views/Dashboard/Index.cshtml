@@ -1,108 +1,166 @@
 ﻿@{
-    ViewData["Title"] = "Beheerder Dashboard";
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h2 class="fw-bold text-center mb-4">📊 Beheerder Dashboard</h2>
+<style>
+    body {
+        background-color: #0f0f0f;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-    <!-- ✅ Statistics Cards -->
-    <div class="row mb-4">
-        <!-- ✅ Knop naar de kaartweergave -->
-        <div class="mt-4 text-center">
-            <a asp-controller="Map" asp-action="Index" class="btn btn-success btn-lg">🌍 Bekijk Auto Locaties</a>
-        </div>
+    .sidebar {
+        width: 250px;
+        background-color: #1a1a1a;
+        min-height: 100vh;
+    }
 
-        <div class="col-md-3">
-            <div class="card bg-dark text-white shadow">
-                <div class="card-body">
-                    <h5 class="card-title">🚗 Totaal Auto's</h5>
-                    <h3 class="fw-bold">@ViewBag.TotalCars</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark text-white shadow">
-                <div class="card-body">
-                    <h5 class="card-title">📅 Totaal Boekingen</h5>
-                    <h3 class="fw-bold">@ViewBag.TotalBookings</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark text-white shadow">
-                <div class="card-body">
-                    <h5 class="card-title">🛠️ Totaal Beheerders</h5>
-                    <h3 class="fw-bold">@ViewBag.TotalAdmins</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark text-white shadow">
-                <div class="card-body">
-                    <h5 class="card-title">📄 Totaal Facturen</h5>
-                    <h3 class="fw-bold">@ViewBag.TotalInvoices</h3>
-                </div>
-            </div>
-        </div>
+        .sidebar .nav-link {
+            color: #ddd;
+            transition: 0.3s;
+        }
+
+            .sidebar .nav-link:hover,
+            .sidebar .nav-link.active {
+                color: #fff;
+                background-color: #292929;
+                border-radius: 5px;
+            }
+
+    .card {
+        background-color: #1f1f1f;
+        color: #fff;
+    }
+
+    .table thead {
+        background-color: #2c2c2c;
+        color: #fff;
+    }
+
+    .table tbody tr:hover {
+        background-color: #1e1e1e;
+    }
+</style>
+
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar p-4">
+        <h4 class="text-center text-white mb-4">AutoAppHoho</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link" asp-controller="Car" asp-action="Index">Auto's</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link" asp-controller="Booking" asp-action="Index">Boekingen</a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link" asp-controller="UserManagement" asp-action="Index">Gebruikers</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Invoice" asp-action="Index">Facturen</a>
+            </li>
+        </ul>
     </div>
 
-    <!-- ✅ Recent Cars Table -->
-    <h4 class="fw-bold mb-3">🚘 Recente Auto's</h4>
-    <div class="table-responsive">
-        <table class="table table-dark table-striped">
-            <thead class="bg-warning text-dark">
-                <tr>
-                    <th>Naam</th>
-                    <th>Brandstoftype</th>
-                    <th>Categorie</th>
-                    <th>Prijs</th>
-                    <th>Acties</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var car in ViewBag.RecentCars)
-                {
+    <!-- Main Content -->
+    <div class="flex-fill p-5">
+        <h2 class="fw-semibold mb-4">Beheerder Dashboard</h2>
+
+        <div class="row mb-5">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="text-muted">Totaal Auto's</h6>
+                        <h4 class="fw-bold">@ViewBag.TotalCars</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="text-muted">Totaal Boekingen</h6>
+                        <h4 class="fw-bold">@ViewBag.TotalBookings</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="text-muted">Totaal Beheerders</h6>
+                        <h4 class="fw-bold">@ViewBag.TotalAdmins</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="text-muted">Totaal Facturen</h6>
+                        <h4 class="fw-bold">@ViewBag.TotalInvoices</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mb-3">Recente Auto's</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-dark table-striped table-hover">
+                <thead>
                     <tr>
-                        <td>@car.Name</td>
-                        <td>@car.FuelType?.Name</td>
-                        <td>@car.Category?.Name</td>
-                        <td>€ @car.Price.ToString("N2")</td>
-                        <td>
-                            <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-warning btn-sm">👀 Bekijk</a>
-                        </td>
+                        <th>Naam</th>
+                        <th>Brandstoftype</th>
+                        <th>Categorie</th>
+                        <th>Prijs</th>
+                        <th>Acties</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var car in ViewBag.RecentCars)
+                    {
+                        <tr>
+                            <td>@car.Name</td>
+                            <td>@car.FuelType?.Name</td>
+                            <td>@car.Category?.Name</td>
+                            <td>€ @car.Price.ToString("N2")</td>
+                            <td>
+                                <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-light btn-sm">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-    <!-- ✅ Manage Cars Button -->
-    <div class="mt-4 text-center">
-        <a asp-controller="Car" asp-action="Index" class="btn btn-primary btn-lg">⚙️ Beheer Auto Aanbiedingen</a>
+        <h5 class="mb-3">Statistieken</h5>
+        <div class="bg-dark p-4 rounded shadow-sm">
+            <canvas id="carStatsChart" style="height: 350px;"></canvas>
+        </div>
     </div>
-
-    <!-- ✅ Statistics Chart Placeholder -->
-    <h4 class="fw-bold mt-5">📊 Statistieken</h4>
-    <canvas id="carStatsChart" style="width:100%; max-height:400px;"></canvas>
 </div>
 
-<!-- ✅ ChartJS Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('carStatsChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+    const ctx = document.getElementById('carStatsChart').getContext('2d');
+    new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Mercedes-Benz', 'Audi', 'BMW', 'Tesla'], // Replace with dynamic data
+            labels: ['Mercedes-Benz', 'Audi', 'BMW', 'Tesla'],
             datasets: [{
                 label: 'Aantal auto\'s per merk',
-                data: [12, 19, 3, 5], // Replace with dynamic data
-                backgroundColor: ['red', 'blue', 'green', 'yellow']
+                data: [12, 19, 3, 5],
+                backgroundColor: ['#bb0a1e', '#0d6efd', '#28a745', '#ffc107']
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 </script>

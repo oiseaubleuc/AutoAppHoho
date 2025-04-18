@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms</value>
+	</resheader>
+
+	<data name="Over ons" xml:space="preserve">
+    <value>About Us</value>
+  </data>
+	<data name="IntroText" xml:space="preserve">
+    <value>Welcome to AutoAppHoho – your digital marketplace for quality cars. We bring sellers and buyers together in a safe, clear and user-friendly way. Whether you're looking for your dream car or want to sell a reliable used vehicle, we've got you covered.</value>
+  </data>
+	<data name="GoalText" xml:space="preserve">
+    <value>Our goal is to make car trading more transparent, faster and more accessible for everyone. We believe in technology that saves time, builds trust and guarantees fair prices.</value>
+  </data>
+	<data name="PassionText" xml:space="preserve">
+    <value>AutoAppHoho is built by car enthusiasts, for car enthusiasts – with an eye for detail and a passion for innovation.</value>
+  </data>
+</root>
