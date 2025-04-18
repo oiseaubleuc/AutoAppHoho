@@ -32,11 +32,13 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IViewLocalizer _localizer;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
 
 
         public RegisterModel( UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore, SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, IViewLocalizer localizer)
+            IEmailSender emailSender, IViewLocalizer localizer, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,6 +47,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _localizer = localizer;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -114,62 +117,59 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            if (!ModelState.IsValid)
+            returnUrl ??= Url.Content("~/");
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (ModelState.IsValid)
             {
-                _logger.LogWarning("ModelState is not valid.");
-                return Page();
+                var user = new ApplicationUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    Voornaam = Input.Voornaam,
+                    Achternaam = Input.Achternaam,
+                    EmailConfirmed = false
+                };
+
+                var result = await _userManager.CreateAsync(user, Input.Password);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("Gebruiker account aangemaakt.");
+
+                    if (await _roleManager.RoleExistsAsync("User"))
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
+
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                    var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        protocol: Request.Scheme);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Bevestig je e-mailadres",
+                        $"Bevestig je account door <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>hier te klikken</a>.");
+
+                    return RedirectToPage("RegisterConfirmation", new
+                    {
+                        email = Input.Email,
+                        returnUrl = returnUrl,
+                        displayConfirmAccountLink = true
+                    });
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-
-            _logger.LogInformation("Register attempt for user: {UserName} with email {Email}", Input.UserName, Input.Email, Input.Voornaam, Input.Achternaam);
-
-            var user = new ApplicationUser
-            {
-                UserName = Input.UserName,
-                Email = Input.Email,
-                Voornaam = Input.Voornaam,
-                Achternaam = Input.Achternaam
-                //PhoneNumber = Input.PhoneNumber
-            };
-
-            await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-
-            // NOW create the user
-            var result = await _userManager.CreateAsync(user, Input.Password);
-
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User {UserName} created successfully.", Input.UserName);
-
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId = userId, code = code },
-                    protocol: Request.Scheme);
-
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your account",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
-            }
-
-
-
-            foreach (var error in result.Errors)
-            {
-                _logger.LogError("Error creating user: {Error}", error.Description);
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
             return Page();
         }
-
         private ApplicationUser CreateUser()
         {
             try

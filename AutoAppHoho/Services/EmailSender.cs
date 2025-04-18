@@ -34,7 +34,7 @@ namespace AutoAppHoho.Services
 
             using (var smtp = new SmtpClient())
             {
-                smtp.Connect(Options.Server, Options.Port, Options.Security);
+                smtp.Connect(Options.Server, Options.Port, MailKit.Security.SecureSocketOptions.StartTls);
                 smtp.Authenticate(Options.Account, Options.Password);
                 smtp.Send(email);
                 smtp.Disconnect(true);

@@ -43,6 +43,24 @@ namespace AutoAppHoho.Data
                 {
                     await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
+                var standaardUser = new ApplicationUser
+                {
+                    Voornaam = "houdi",
+                    Achternaam = "leerling",
+                    UserName = "user@autoapphoho.com",
+                    Email = "user@autoapphoho.com",
+                    EmailConfirmed = true
+                };
+
+                if (await userManager.FindByEmailAsync(standaardUser.Email) == null)
+                {
+                    var createUser = await userManager.CreateAsync(standaardUser, "User123!");
+                    if (createUser.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(standaardUser, "User");
+                    }
+                }
+
             }
         }
     }
