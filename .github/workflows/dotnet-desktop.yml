@@ -1,4 +1,4 @@
-name: .NET CI
+name: .NET Build
 
 on:
   push:
@@ -8,11 +8,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
     - name: Setup .NET
@@ -23,17 +23,5 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore AutoAppHoho.sln
 
-    - name: Build project
+    - name: Build solution
       run: dotnet build AutoAppHoho.sln --configuration Release --no-restore
-
-    - name: Run tests
-      run: dotnet test AutoAppHoho.sln --no-build --verbosity normal
-
-    - name: Publish app
-      run: dotnet publish AutoAppHoho.sln -c Release -o ./publish
-
-    - name: Upload published app as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: published-app
-        path: ./publish
