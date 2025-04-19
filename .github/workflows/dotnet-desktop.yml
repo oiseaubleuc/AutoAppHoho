@@ -1,4 +1,4 @@
-name: .NET Build en testen
+name: .NET Verification Pipeline
 
 on:
   push:
@@ -26,5 +26,17 @@ jobs:
     - name: Build solution
       run: dotnet build AutoAppHoho.sln --configuration Release --no-restore
 
-    - name: Run tests
-      run: dotnet test AutoAppHoho.sln --no-build --verbosity normal
+    - name: Run tests with code coverage
+      run: dotnet test AutoAppHoho.sln --no-build --configuration Release --collect:"XPlat Code Coverage"
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate code coverage report
+      run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Html
+
+    - name: Upload HTML code coverage report
+      uses: actions/upload-artifact@v2
+      with:
+        name: code-coverage-report
+        path: coveragereport
