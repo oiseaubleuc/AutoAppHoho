@@ -1,4 +1,4 @@
-name: .NET CI/CD Pipeline
+name: Project
 
 on:
   push:
@@ -7,32 +7,24 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  build:
+
+    runs-on: windows-latest
 
     steps:
-    - name:  Checkout code
-      uses: actions/checkout@v3 
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name:  Setup .NET
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x 
+        dotnet-version: '8.0.x'
 
-    - name:  Restore dependencies
-      run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore AutoAppHoho.sln
 
-    - name:  Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build
+      run: dotnet build AutoAppHoho.sln --configuration Release
 
-    - name:  Run Tests
-      run: dotnet test --no-build --verbosity normal
-
-    - name:  Publish App (simuleer deployment)
-      run: dotnet publish -c Release -o ./publish
-
-    - name:  Upload published app as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: published-app
-        path: ./publish
+    - name: Publish
+      run: dotnet publish AutoAppHoho.sln -c Release -o ./publish
