@@ -1,14 +1,14 @@
-name: Project
+name: .NET CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: windows-latest
 
     steps:
@@ -23,8 +23,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore AutoAppHoho.sln
 
-    - name: Build
-      run: dotnet build AutoAppHoho.sln --configuration Release
+    - name: Build project
+      run: dotnet build AutoAppHoho.sln --configuration Release --no-restore
 
-    - name: Publish
+    - name: Run tests
+      run: dotnet test AutoAppHoho.sln --no-build --verbosity normal
+
+    - name: Publish app
       run: dotnet publish AutoAppHoho.sln -c Release -o ./publish
+
+    - name: Upload published app as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: published-app
+        path: ./publish
