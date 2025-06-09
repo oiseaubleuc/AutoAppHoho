@@ -2,34 +2,84 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-<div class="container mt-5">
-    <h1>@Localizer["WelcomeMessage"]</h1>
+<!-- Hero Section -->
+<section class="hero-section position-relative">
+    <img src="~/uploads/luxury.png" alt="Luxury Cars" class="hero-bg" />
 
-    <div class="text-center">
-        <img src="~/uploads/luxury.png" class="img-fluid rounded shadow" alt="Auto Markt">
+    <div class="hero-overlay text-center">
+        <h1 class="hero-title display-4 fw-bold">@Localizer["WelcomeMessage"]</h1>
+        <p class="lead">@Localizer["IntroSubtext"]</p>
+
+        <div class="mt-4">
+            <a asp-controller="Car" asp-action="Index" class="btn btn-gold me-2">
+                @Localizer["ViewAllListings"]
+            </a>
+            <a asp-controller="Dashboard" asp-action="Stats" class="btn btn-outline-light">
+                @Localizer["ViewSiteStatistics"]
+            </a>
+        </div>
     </div>
 
-    <div class="text-center mt-4">
-        <a asp-controller="Car" asp-action="Index" class="btn btn-lg btn-primary">
-            @Localizer["ViewAllListings"]
-        </a>
-        <button class="btn btn-secondary">
-            @Localizer["ViewSiteStatistics"]
-        </button>
+    <div class="scroll-indicator">
+        <span>SCROLL</span>
+        <div class="scroll-line"></div>
     </div>
+</section>
 
-    <h2 class="mt-5">@Localizer["LatestPosts"]</h2>
+<!-- Highlights Section -->
+<section class="container my-5">
+    <h2 class="text-center fw-bold mb-4">Top modellen</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+            <div class="highlight-card" style="background-image: url('/uploads/porsche911.jpg');">
+                <div class="highlight-content">
+                    <h5 class="fw-bold text-white">De nieuwe 911 Carrera S.</h5>
+                    <span class="text-white-50">&rarr;</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="highlight-card" style="background-image: url('/uploads/macan.jpg');">
+                <div class="highlight-content">
+                    <h5 class="fw-bold text-white">Porsche Macan Financial Lease</h5>
+                    <span class="text-white-50">&rarr;</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="highlight-card" style="background-image: url('/uploads/taycan.jpg');">
+                <div class="highlight-content">
+                    <h5 class="fw-bold text-white">De nieuwe Taycan.</h5>
+                    <span class="text-white-50">&rarr;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Ads Section -->
+<section class="container my-5">
+    <h2 class="text-center text-light mb-4">@Localizer["LatestPosts"]</h2>
     <div class="row">
         @foreach (var car in Model.Take(5))
         {
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@car.Name</h5>
-                        <p class="card-text">
-                            @car.Price.ToString("C", System.Globalization.CultureInfo.CurrentCulture)
+            <div class="col-md-4 mb-4">
+                <div class="card shadow car-card text-white bg-dark border-0">
+                    @if (!string.IsNullOrEmpty(car.ImagePath))
+                    {
+                        <img src="@car.ImagePath" class="card-img-top" alt="@car.Name" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <img src="/images/no-image.png" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;">
+                    }
+                    <div class="card-body px-3 pt-3 pb-1">
+                        <h6 class="fw-bold mb-1">@car.Name</h6>
+                        <p class="text-muted small mb-0">@car.FuelType?.Name | @car.Category?.Name</p>
+                        <p class="fw-semibold mb-0 text-light">
+                            àpd <span class="text-primary">@car.Price.ToString("0")€</span> <span class="text-muted">(htva)/mois</span>
                         </p>
-                        <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-info w-100">
+                        <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-light w-100 mt-2">
                             @Localizer["ViewMore"]
                         </a>
                     </div>
@@ -37,4 +87,4 @@
             </div>
         }
     </div>
-</div>
+</section>

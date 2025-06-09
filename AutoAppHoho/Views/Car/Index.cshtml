@@ -53,33 +53,59 @@
         <input type="text" id="searchInput" class="form-control" placeholder="@Localizer["SearchPlaceholder"]">
     </div>
 
-    <div id="carList" class="row">
+    <div id="carList" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         @foreach (var car in Model)
         {
-            <div class="col-md-4 mb-4 car-item">
-                <div class="card shadow">
-                    @if (!string.IsNullOrEmpty(car.ImagePath))
-                    {
-                        <img src="@car.ImagePath" class="card-img-top" alt="Car Image" style="height: 200px; object-fit: cover;">
-                    }
-                    else
-                    {
-                        <img src="/images/no-image.png" class="card-img-top" alt="No Image" style="height: 200px; object-fit: cover;">
-                    }
-
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">@car.Name</h5>
-                        <p class="card-text text-muted">@car.FuelType?.Name | @car.Category?.Name</p>
-                        <p class="text-success fw-bold">€@car.Price.ToString("N2")</p>
-                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-primary w-100">
-                            @Localizer["MoreInfo"]
-                        </a>
+            <div class="col">
+                <a asp-controller="Car" asp-action="Details" asp-route-id="@car.Id" class="text-decoration-none text-dark">
+                    <div class="card car-tile h-100 shadow-sm border-0">
+                        <img src="@(string.IsNullOrEmpty(car.ImagePath) ? "/images/no-image.png" : car.ImagePath)" class="card-img-top rounded-top" alt="@car.Name" style="object-fit: cover; height: 180px;">
+                        <div class="card-body px-3 pt-3 pb-1">
+                            <h6 class="fw-bold mb-1">@car.Name</h6>
+                            <p class="text-muted small mb-0">@car.FuelType?.Name | @car.Category?.Name</p>
+                            <p class="fw-semibold mb-0 text-dark">
+                                àpd <span class="text-primary">@car.Price.ToString("0")€</span> <span class="text-muted">(htva)/mois</span>
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white border-0 d-flex justify-content-center pb-3">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         }
     </div>
 </div>
+
+<style>
+    .car-tile {
+        border-radius: 15px;
+        transition: transform 0.3s ease-in-out;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+        .car-tile:hover {
+            transform: translateY(-5px);
+        }
+
+        .car-tile .card-img-top {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            object-fit: cover;
+        }
+
+    .dot {
+        width: 6px;
+        height: 6px;
+        background-color: #333;
+        border-radius: 50%;
+        margin: 0 3px;
+        opacity: 0.6;
+    }
+</style>
 
 <script>
     $(document).ready(function () {
@@ -94,16 +120,24 @@
                     carList.html("");
                     data.forEach(car => {
                         carList.append(`
-                                <div class="col-md-4 mb-4">
-                                    <div class="card shadow">
-                                        <img src="${car.imagePath ? car.imagePath : '/images/no-image.png'}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                                        <div class="card-body">
-                                            <h5 class="card-title fw-bold">${car.name}</h5>
-                                            <p class="card-text text-muted">${car.fuelType} | ${car.category}</p>
-                                            <p class="text-success fw-bold">€${car.price.toFixed(2)}</p>
-                                            <a href="/Car/Details/${car.id}" class="btn btn-outline-primary w-100">@Localizer["MoreInfo"]</a>
+                                <div class="col">
+                                    <a href="/Car/Details/${car.id}" class="text-decoration-none text-dark">
+                                        <div class="card car-tile h-100 shadow-sm border-0">
+                                            <img src="${car.imagePath ? car.imagePath : '/images/no-image.png'}" class="card-img-top rounded-top" style="object-fit: cover; height: 180px;">
+                                            <div class="card-body px-3 pt-3 pb-1">
+                                                <h6 class="fw-bold mb-1">${car.name}</h6>
+                                                <p class="text-muted small mb-0">${car.fuelType} | ${car.category}</p>
+                                                <p class="fw-semibold mb-0 text-dark">
+                                                     <span class="text-primary">${car.price}€</span>
+                                                </p>
+                                            </div>
+                                            <div class="card-footer bg-white border-0 d-flex justify-content-center pb-3">
+                                                <div class="dot"></div>
+                                                <div class="dot"></div>
+                                                <div class="dot"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             `);
                     });

@@ -39,5 +39,9 @@
 	<data name="InvalidLoginAttempt" xml:space="preserve">
   <value>Ongeldige inlogpoging.</value>
 </data>
+	<data name="InvalidLoginAttempt" xml:space="preserve">
+  <value>Ongeldige inlogpoging.</value>
+</data>
+
 
 </root>

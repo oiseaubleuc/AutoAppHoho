@@ -123,7 +123,8 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
 
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, _localizer["InvalidLoginAttempt"].Value);
+                ModelState.AddModelError(string.Empty, _localizer?["InvalidLoginAttempt"]?.Value ?? "Ongeldige inlogpoging.");
+
                 return Page();
             }
 
@@ -135,7 +136,7 @@ namespace AutoAppHoho.Areas.Identity.Pages.Account
             }
             else
             {
-                ModelState.AddModelError(string.Empty, _localizer["InvalidLoginAttempt"].Value);
+                ModelState.AddModelError(string.Empty, _localizer?["InvalidLoginAttempt"]?.Value ?? "Ongeldige inlogpoging.");
                 return Page();
             }
         }

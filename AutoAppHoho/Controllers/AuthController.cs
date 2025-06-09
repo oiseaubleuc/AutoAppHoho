@@ -22,7 +22,6 @@ namespace AutoAppHoho.ApiControllers
             _signInManager = signInManager;
         }
 
-        // ✅ **Registreren van een nieuwe gebruiker**
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterModel model)
         {
@@ -47,7 +46,6 @@ namespace AutoAppHoho.ApiControllers
             return Ok(new { message = "User created successfully" });
         }
 
-        // ✅ **Inloggen en JWT-token genereren**
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginModel model)
         {
@@ -79,3 +77,5 @@ namespace AutoAppHoho.ApiControllers
         }
     }
 }
+
+

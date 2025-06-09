@@ -10,63 +10,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AutoAppHoho</title>
 
-    <!-- Stylesheets -->
+    <!-- Fonts & Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
 </head>
-<body class="bg-light text-dark">
+<body class="bg-dark text-white">
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm border-bottom border-secondary">
             <div class="container">
                 <a class="navbar-brand text-warning fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    AutoApp<span class="text-dark">Hoho</span>
+                    AutoApp<span class="text-light">Hoho</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Car" asp-action="Index">@Localizer["Cars"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">@Localizer["Dashboard"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Nieuws" asp-action="Index">@Localizer["News"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="About" asp-action="Index">@Localizer["Over ons"]</a>
-                        </li>
-
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Car" asp-action="Index">@Localizer["Cars"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Dashboard" asp-action="Index">@Localizer["Dashboard"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Nieuws" asp-action="Index">@Localizer["News"]</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="About" asp-action="Index">@Localizer["Over ons"]</a></li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="UserManagement" asp-action="Index">Gebruikersbeheer</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="UserManagement" asp-action="Index">Gebruikersbeheer</a></li>
                         }
-
-                     
                     </ul>
 
-                    <!-- Taalkeuze dropdown -->
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown">
                                 @Localizer["Language"]
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary" aria-labelledby="languageDropdown">
                                 @foreach (var lang in new[] { ("fr", "Français"), ("en", "English"), ("nl", "Nederlands") })
                                 {
-                                    <li>
-                                        <a class="dropdown-item change-language" href="#" data-culture="@lang.Item1">@lang.Item2</a>
-                                    </li>
+                                    <li><a class="dropdown-item text-white change-language" href="#" data-culture="@lang.Item1">@lang.Item2</a></li>
                                 }
                             </ul>
                         </li>
@@ -77,13 +57,6 @@
                 </div>
             </div>
         </nav>
-        <div class="container mt-3">
-            <button id="theme-toggle" class="btn btn-outline-secondary">Switch to Dark Mode</button>
-            <p class="text-muted small text-end">
-                 Current Culture: @System.Globalization.CultureInfo.CurrentCulture.Name
-            </p>
-        </div>
-
     </header>
 
     <div class="container my-5">
@@ -92,42 +65,23 @@
         </main>
     </div>
 
-    <footer class="bg-white text-muted text-center py-3 border-top">
+    <footer class="bg-black text-muted text-center py-3 border-top border-secondary">
         <div class="container">
             &copy; 2025 - AutoAppHoho - <a href="#" class="text-warning">@Localizer["Privacy"]</a>
         </div>
     </footer>
 
+    <!-- Bootstrap + Theme Switch -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const toggleButton = document.getElementById("theme-toggle");
-            const body = document.body;
-
-            if (localStorage.getItem("dark-mode") === "enabled") {
-                body.classList.add("bg-dark", "text-white");
-                body.classList.remove("bg-light", "text-dark");
-                toggleButton.textContent = "Switch to Light Mode";
-            }
-
-            toggleButton.addEventListener("click", function () {
-                if (body.classList.contains("bg-dark")) {
-                    body.classList.add("bg-light", "text-dark");
-                    body.classList.remove("bg-dark", "text-white");
-                    localStorage.setItem("dark-mode", "disabled");
-                    toggleButton.textContent = "Switch to Dark Mode";
-                } else {
-                    body.classList.add("bg-dark", "text-white");
-                    body.classList.remove("bg-light", "text-dark");
-                    localStorage.setItem("dark-mode", "enabled");
-                    toggleButton.textContent = "Switch to Light Mode";
-                }
-            });
-
             document.querySelectorAll(".change-language").forEach(item => {
                 item.addEventListener("click", function (e) {
                     e.preventDefault();
                     const culture = this.getAttribute("data-culture");
-
                     fetch("/Home/ChangeLanguage", {
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -135,18 +89,11 @@
                     }).then(response => {
                         if (response.ok) {
                             location.reload();
-                        } else {
-                            console.error("Fout bij het wijzigen van de taal.");
                         }
-                    }).catch(error => console.error("Er is een fout opgetreden:", error));
+                    });
                 });
             });
         });
     </script>
-
-    <!-- Bootstrap en Custom Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

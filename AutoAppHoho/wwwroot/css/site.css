@@ -1,164 +1,172 @@
-/* General Body Styling */
 body {
-    font-family: 'Orbitron', sans-serif;
-    background-color: #1b1b1b; /* Donkere ruimte-thema */
-    color: #ffffff; /* Witte tekst voor contrast */
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 400;
+    background-color: #101010;
+    color: #f2f2f2;
+    letter-spacing: 0.3px;
+    line-height: 1.6;
+}
+
+h2, h5 {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.hero-section {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
     margin: 0;
     padding: 0;
 }
 
-/* Navbar Styling */
-.navbar {
-    background: linear-gradient(90deg, #000000, #1b1b1b);
-    border-bottom: 2px solid #ffaa00; /* Geel accent */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.navbar-brand {
-    font-size: 1.5rem;
-    letter-spacing: 2px;
-    color: #ffaa00 !important; /* Geel accent voor NASA-stijl */
-}
-
-.navbar-nav .nav-link {
-    color: #cccccc !important;
-    transition: color 0.3s ease-in-out;
-}
-
-    .navbar-nav .nav-link:hover {
-        color: #ffaa00 !important; /* Hover-effect */
-    }
-
-/* Container Styling */
-.container {
-    padding: 20px;
-}
-
-/* Card Styling */
-.card {
-    background-color: #2a2a2a; /* Donkergrijs voor kaarten */
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtiele schaduw */
-}
-
-.card-title {
-    color: #ffaa00; /* Geel accent */
-    font-weight: bold;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-
-.card-text {
-    color: #e0e0e0;
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-/* Footer Styling */
-.footer {
-    background-color: #000000; /* Zwart voor consistentie */
-    border-top: 2px solid #ffaa00;
-    color: #cccccc;
-    text-align: center;
-    padding: 15px 0;
-}
-
-    .footer a {
-        color: #ffaa00;
-        text-decoration: none;
-    }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-/* Buttons */
-.btn-primary {
-    background-color: #ffaa00;
-    border-color: #ffaa00;
-    color: #000000;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
-}
-
-    .btn-primary:hover {
-        background-color: #cc8800;
-        border-color: #cc8800;
-    }
-
-/* Table Styling */
-.table {
-    background-color: #2a2a2a;
-    color: #ffffff;
-    border-collapse: collapse;
+.hero-bg-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    margin-bottom: 20px;
+    height: 100%;
+    z-index: 1;
 }
 
-    .table th {
-        background-color: #ffaa00;
-        color: #000000;
-        text-align: left;
-        padding: 10px;
-    }
-
-    .table td {
-        padding: 10px;
-        border-top: 1px solid #444444;
-    }
-
-/* Links */
-a {
-    color: #ffaa00;
-    text-decoration: none;
-    transition: color 0.3s ease-in-out;
+.hero-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    opacity: 0.7;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
-    a:hover {
-        text-decoration: underline;
-    }
-
-/* Responsiveness */
-@media (max-width: 768px) {
-    .navbar-brand {
-        font-size: 1.2rem;
-    }
-
-    .card-title {
-        font-size: 1rem;
-    }
-
-    .card-text {
-        font-size: 0.9rem;
-    }
-}
-
-.news-card {
+.hero-overlay {
     position: relative;
-    overflow: hidden;
-    border-radius: 10px;
+    z-index: 2;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.btn-gold {
+    background-color: #ffc107;
+    border: none;
+    color: black;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+.btn-outline-light {
+    border-radius: 30px;
+    font-weight: 500;
+    padding: 10px 24px;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
+    z-index: 3;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.scroll-line {
+    width: 1px;
+    height: 25px;
+    background-color: white;
+    margin: 8px auto 0;
+    animation: scrollLineAnim 1.2s infinite;
+}
+
+@keyframes scrollLineAnim {
+    0% {
+        height: 5px;
+        opacity: 0.3;
+    }
+
+    50% {
+        height: 25px;
+        opacity: 1;
+    }
+
+    100% {
+        height: 5px;
+        opacity: 0.3;
+    }
+}
+
+.car-card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     transition: transform 0.3s ease-in-out;
 }
 
-    .news-card:hover {
-        transform: scale(1.05);
+    .car-card:hover {
+        transform: translateY(-5px);
     }
 
-.news-image {
+.highlight-card {
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
     height: 250px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.card-img-overlay {
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
+    display: flex;
+    align-items: flex-end;
     padding: 20px;
-    border-radius: 10px;
-    transition: background 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
 }
 
-.news-card:hover .card-img-overlay {
-    background: rgba(0, 0, 0, 0.8);
+    .highlight-card:hover {
+        transform: translateY(-5px);
+    }
+
+.highlight-content {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+/* Verbeterde zichtbaarheid van form-floating labels */
+.form-floating > label {
+    color: #6c757d; /* Lichtgrijs zoals placeholder */
+    font-weight: 500;
+    opacity: 1 !important; /* Dwing zichtbaarheid af */
+    transform: translateY(0.5rem); /* Iets lager zodat ze als placeholder lijken */
+    transition: all 0.2s ease;
+}
+
+/* Als er getypt wordt: label omhoog zoals gewoonlijk */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: #343a40; /* Donkerder als input gevuld is */
+    transform: scale(0.85) translateY(-0.6rem) translateX(0.15rem);
 }

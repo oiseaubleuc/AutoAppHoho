@@ -60,7 +60,6 @@ namespace AutoAppHoho.Controllers
             return View(await cars.ToListAsync());
         }
 
-        // ✅ 🔹 Nieuwe auto aanmaken (GET)
         public IActionResult Create()
         {
             ViewBag.FuelTypes = _context.FuelTypes.ToList();
@@ -68,7 +67,6 @@ namespace AutoAppHoho.Controllers
             return View();
         }
 
-        // ✅ 🔹 Nieuwe auto aanmaken (POST)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Car car)
@@ -118,7 +116,6 @@ namespace AutoAppHoho.Controllers
             return View(car);
         }
 
-        // ✅ 🔹 Auto details bekijken
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
@@ -171,15 +168,26 @@ namespace AutoAppHoho.Controllers
             }
         }
 
-        // ✅ 🔹 Auto verwijderen (GET)
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null)
+            if (id == null)
+            {
                 return NotFound();
+            }
+
+            var car = await _context.Cars
+                .Include(c => c.FuelType)
+                .Include(c => c.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (car == null)
+            {
+                return NotFound();
+            }
 
             return View(car);
         }
+
 
         // ✅ 🔹 Auto verwijderen (POST)
         [HttpPost, ActionName("Delete")]
@@ -195,7 +203,6 @@ namespace AutoAppHoho.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ 🔹 Auto zoeken
         [HttpGet]
         public async Task<IActionResult> Search(string searchTerm)
         {
