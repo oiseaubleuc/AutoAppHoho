@@ -1,38 +1,36 @@
-name: .NET CI/CD Pipeline
+name: .NET Verification Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  verify:
+    runs-on: windows-latest
 
     steps:
-    - name:  Checkout code
-      uses: actions/checkout@v3 
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name:  Setup .NET
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x 
+        dotnet-version: '8.0.x'
 
-    - name:  Restore dependencies
-      run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore AutoAppHoho.sln
 
-    - name:  Build
-      run: dotnet build --configuration Release --no-restore
+    - name: Build solution
+      run: dotnet build AutoAppHoho.sln --configuration Release --no-restore
 
-    - name:  Run Tests
-      run: dotnet test --no-build --verbosity normal
+    - name: Run tests with code coverage
+      run: dotnet test AutoAppHoho.sln --no-build --configuration Release --collect:"XPlat Code Coverage"
 
-    - name:  Publish App (simuleer deployment)
-      run: dotnet publish -c Release -o ./publish
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
-    - name:  Upload published app as artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: published-app
-        path: ./publish
+    - name: Generate code coverage report
+      run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Html
